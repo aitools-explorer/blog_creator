@@ -1,0 +1,18 @@
+[
+    {
+      "family": "CourierPrime",
+      "fonts": [
+        {
+          "asset": "fonts/CourierPrime-Regular.ttf"
+        }
+      ]
+    },
+    {
+      "family": "RobotoMono",
+      "fonts": [
+        {
+          "asset": "fonts/RobotoMono-Regular.ttf"
+        }
+      ]
+    }
+  ]

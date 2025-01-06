@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  blog_creator:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+    environment:
+      - FLUTTER_WEB_ENV=development
+
+
+# command: sh -c "docker build -t blog_creator . && docker run -p 80:80 blog_creator"
