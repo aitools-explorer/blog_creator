@@ -1,9 +1,13 @@
 
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 class NetworkConst {
 
   // open ai
-  static const String openAiKey = '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'; 
+  
+  static const String openAiKey = 'c2stcHJvai1CUzJ0SVYtYVFKMmFCbnVWOUM3TWhFQ0tqbmpRbzY4UVZNNUoycUtIb2h2Z0xJd3JLVlgtdVRXZ003ZC1PSFRjTHFBT2dvQllUM1QzQmxia0ZKNnhyaUtCaHVkeXV3VzhWaks4Q0tncEYwS21pME5PcTJNYTRya0MzOFJPTWRpZDNlU2Vmc2lNMHViSlVTR3FqNUljZ3o1QXg2NEE=';
   static const String openAiChatUrl = 'https://api.openai.com/v1/chat/completions';
   static const String openAiImageUrl = 'https://api.openai.com/v1/images/generations';
   static const String openAiPlagiarismUrl = 'https://api.openai.com/v1/engines/text-similarity';
@@ -31,6 +35,15 @@ class NetworkConst {
 //   static const String rapidApiKey = String.fromEnvironment('rapidApiKey');
 //   static const String rapidApiPlagCheckUrl = 'https://plagiarism-checker-and-auto-citation-generator-multi-lingual.p.rapidapi.com/plagiarism';
 
+  static String base64Decode(String input) {
+  // List<int> bytes = utf8.encode(input);
+  // String base64String = Base64Encoder().convert(bytes);
+  
+    Uint8List base64String = Base64Decoder().convert(input);
+    String decoded = utf8.decode(base64String);
+
+    return decoded;
+  }
 
 
 }
