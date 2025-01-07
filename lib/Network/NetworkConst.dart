@@ -3,7 +3,7 @@
 class NetworkConst {
 
   // open ai
-  static const String openAiKey = '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'; 
+  static const String openAiKey = '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'; 
   static const String openAiChatUrl = 'https://api.openai.com/v1/chat/completions';
   static const String openAiImageUrl = 'https://api.openai.com/v1/images/generations';
   static const String openAiPlagiarismUrl = 'https://api.openai.com/v1/engines/text-similarity';
