@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:blog_creator/Authoring.dart';
+import 'package:blog_creator/Network/NetworkConst.dart';
 import 'package:blog_creator/Provider/ButtonProvider.dart';
 import 'package:blog_creator/Provider/CheckboxProvider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
@@ -34,6 +37,14 @@ Future<void> main() async {
   ], child: CognifyApp()));
 }
 
+String base64Encode(String input) {
+
+  List<int> bytes = utf8.encode(input);
+  String base64String = Base64Encoder().convert(bytes);
+  
+  return base64String;
+}
+
 class CognifyApp extends StatelessWidget {
 
   initializeApp() async {
@@ -46,6 +57,7 @@ class CognifyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     
     // initializeApp();
+    
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
