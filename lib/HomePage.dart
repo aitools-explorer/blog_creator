@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 30), // Spacing between cards and text field
 
               const Text(
-                "Topic Discovery 1",
+                "Topic Discovery 1..",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'NotoSans-Regular',
