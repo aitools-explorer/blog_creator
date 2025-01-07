@@ -29,11 +29,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # - name: Install Flutter
+      #   run: |
+      #     wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_stable.tar.xz
+      #     tar xvf flutter_linux_stable.tar.xz
+      #     export PATH=$PATH:$PWD/flutter/bin
+
       - name: Install Flutter
         run: |
-          wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_stable.tar.xz
-          tar xvf flutter_linux_stable.tar.xz
-          export PATH=$PATH:$PWD/flutter/bin
+          git clone https://github.com/flutter/flutter.git /usr/local/flutter
+          export PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
       - name: Install dependencies
         run: flutter pub get
       - name: Build and deploy
