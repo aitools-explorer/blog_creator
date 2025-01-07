@@ -21,6 +21,9 @@ version: 1.0.0+1
 environment:
   # sdk: '>=3.3.4 <4.0.0'
   sdk: ^3.6.0
+  # openAiKey: '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'
+  # rapidApiKey: '37be52ab56msh66ded5f6413f895p1e7c83jsn37a5af8334f2'
+  # webApiKey: 'ZjY45kZSxSjvH2GWbNBKh5FN8tzYGdTqxVDs2SRtMpcp1hc2YyFa9WXr'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -42,6 +45,9 @@ dependencies:
   flutter_svg: ^2.0.10+1
   http: ^1.2.2
   printing: ^5.13.4
+  firebase_core: ^3.9.0 # Check for the latest version
+  firebase_auth: ^5.3.4
+  firebase_auth_web: ^5.13.5
 
 dev_dependencies:
   flutter_test:

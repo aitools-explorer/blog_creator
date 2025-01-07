@@ -17,5 +17,20 @@ class NetworkConst {
   static const String rapidApiPlagCheckUrl = 'https://plagiarism-checker-and-auto-citation-generator-multi-lingual.p.rapidapi.com/plagiarism';
 
 
+//   // open ai
+//   static const String openAiKey = String.fromEnvironment('openAiKey'); 
+//   static const String openAiChatUrl = 'https://api.openai.com/v1/chat/completions';
+//   static const String openAiImageUrl = 'https://api.openai.com/v1/images/generations';
+//   static const String openAiPlagiarismUrl = 'https://api.openai.com/v1/engines/text-similarity';
+
+//  // pexels
+//   static const String webApiKey = String.fromEnvironment('webApiKey');
+//   static const String webApiUrl = 'https://api.pexels.com/v1/search';
+
+//   // static const String rapidApiKey = '6bff92abccmsh254afc3bc25cb76p1cbc92jsn3ac29e943e01';
+//   static const String rapidApiKey = String.fromEnvironment('rapidApiKey');
+//   static const String rapidApiPlagCheckUrl = 'https://plagiarism-checker-and-auto-citation-generator-multi-lingual.p.rapidapi.com/plagiarism';
+
+
 
 }

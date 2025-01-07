@@ -16,7 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'CognifyDrawer.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+
+Future<void> main() async {
   // runApp(CognifyApp());
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => NavigationProvider()),
@@ -32,8 +35,18 @@ void main() {
 }
 
 class CognifyApp extends StatelessWidget {
+
+  initializeApp() async {
+    
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    // Firebase.initializeApp( options: DefaultFirebaseOptions.currentPlatform,);
+  }
   @override
   Widget build(BuildContext context) {
+    
+    // initializeApp();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Cognify',
