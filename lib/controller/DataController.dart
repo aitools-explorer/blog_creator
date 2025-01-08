@@ -262,6 +262,41 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
         }
   }
 
+  Future<bool> regenerate33BlogContent(BuildContext context, String facts) async {
+          
+          CheckListProvider checkListProvider = Provider.of<CheckListProvider>(context, listen: false);
+          checkListProvider.listFinalContent.clear();
+
+          try {
+              String prompt = "Avoid extra spaces, escape notations such as \n etc, from the result. Provide big detail description for a blog.:";
+              prompt= "Avoid extra spaces, escape notations such as \n etc, from the result. Provide big detail description for a blog. Result in format of { \"data\" : [{\"topic\": \"\", \"paragraph\": ''}, {\"topic\": '', \"paragraph\": ''}] } by occurance order on :";
+              String resp = await openAIHandler().getChatGPTResponse('$prompt $facts');
+              resp = resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', '');
+              
+
+              print('resp : ${resp}');
+              List<dynamic> data =  jsonDecode(resp)['data'];
+
+              
+
+              for (int i=0; i < data.length; i++) {
+
+                  String title = data[i]['topic'];
+                  String content = data[i]['paragraph'];
+                  if (title != null && content != null) {
+                      checkListProvider.addContent(title, content, '', Uint8List.fromList([],), isSelected: true );
+                  }
+
+                  print('Title: ${title}  \n  Content : ${content}' );
+                  print('\n'); 
+              } 
+              return true;
+          } catch (e) {
+              print(e.toString());
+            return false;
+          }
+    }
+
 
   Future<bool> getBlogContent(BuildContext context, String facts) async {
         
@@ -269,14 +304,8 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
         checkListProvider.listFinalContent.clear();
 
         try {
-            String prompt = "Provide detail description with a format of **topic**:\nparagraphs by occurance order on :";
-            prompt= "Avoid extra spaces, escape notations such as \n etc, from the result. Provide big detail description for a blog. Result in format of { \"data\" : [{\"topic\": \"\", \"paragraph\": ''}, {\"topic\": '', \"paragraph\": ''}] } by occurance order on :";
-            
+            String prompt= "Avoid extra spaces, escape notations such as \n etc, from the result. Provide big detail description for a blog. Result in format of { \"data\" : [{\"topic\": \"\", \"paragraph\": ''}, {\"topic\": '', \"paragraph\": ''}] } by occurance order on :";
             String resp = await openAIHandler().getChatGPTResponse('$prompt $facts');
-            // String resp = await openAIHandler().getChatGPTResponse('provide 15 facts in number points and no extra content on:- $domain: $topic');
-            
-            // String resp = "**Birth and Early Life:**\nMahatma Gandhi was born on October 2, 1869, in Porbandar, a coastal town in present-day Gujarat, India. His full name was Mohandas Karamchand Gandhi, and he would later become renowned as the 'Father of the Nation' in India due to his significant role in the country's struggle for independence from British rule.\n\n**Concept of Satyagraha:**\nThe term 'Satyagraha' was coined by Mahatma Gandhi in 1906. This concept highlighted the power of truth and nonviolent resistance as a means of social and political change. Gandhi introduced this approach as a means to secure rights through nonviolent protests and civil disobedience, believing in the moral power of nonviolence as opposed to physical violence.\n\n**First Application in South Africa:**\nThe first successful application of Satyagraha was during the Indian community's struggle in South Africa. Gandhi lived in South Africa for over two decades, where he developed his philosophy of nonviolent resistance. The movement began in response to discriminatory laws against Indians and was characterized by protests and noncompliance with the unjust laws, ultimately leading to reforms.\n\n**Kheda Satyagraha of 1918:**\nOne of the notable applications of Satyagraha in India was the Kheda Satyagraha of 1918. This movement involved peasants in the Kheda district of Gujarat who demanded relief from taxes due to crop failure and famine conditions. Gandhi organized the farmers and helped orchestrate a nonviolent protest against tax collection, which eventually led to the suspension of tax recovery and some relief for the farmers.\n\n**Boycotts and the Fight for Independence:**\nGandhi's strategy for Indian independence also included widespread boycotts of British goods, schools, and institutions. This was part of the broader non-cooperation movement, aiming to weaken the British economic and administrative grip on India. The boycott effectively mobilized millions of Indians to stop buying British products and to withdraw from British-run educational and administrative institutions.\n\n**Economic Impact:**\nThe boycott and other forms of nonviolent resistance had a significant economic impact, causing a decline in British imports and a dent in the colonial economy. This form of economic noncooperation demonstrated the power of collective action, severely affecting British economic interests in India and strengthening the resolve and unity among Indians fighting for independence.\n\nGandhi's innovative use of Satyagraha through various movements set a precedent for nonviolent resistance worldwide, influencing figures like Martin Luther King Jr. and Nelson Mandela in their respective struggles for civil rights and freedom.";
-            // String resp = "{ \n    \"data\": [\n        {\n            \"topic\": \"Salt March\",\n            \"paragraphs\": \"The Salt March, also known as the Dandi March, was a critical event in the Indian independence movement, led by Mahatma Gandhi in 1930. This non-violent act of civil disobedience spanned approximately 240 miles, starting from the Sabarmati Ashram in Ahmedabad and culminating at the coastal village of Dandi in Gujarat. Gandhi and his followers aimed to protest the British salt monopoly, which imposed taxes on Indian salt production and sale, severely affecting the common people. The march began on March 12, 1930, and concluded on April 6, 1930, when Gandhi made salt from seawater, symbolizing the defiance of British laws. This act galvanized the Indian population, demonstrating the power of peaceful protest and greatly increasing momentum towards India's quest for independence.\"\n        },\n        {\n            \"topic\": \"Satyagraha\",\n            \"paragraphs\": \"Satyagraha, meaning 'truth force,' is a methodology of non-violent resistance developed by Mahatma Gandhi. Grounded in the belief that truth and non-violence are inherently interlinked, satyagraha was not merely a political tool but a way of life. Gandhi believed that one must adhere to truth and non-violence to confront injustice effectively. This concept allowed him to cultivate resistance movements that demanded moral high ground and aimed to transform adversaries through understanding and dialogue rather than physical force. Satyagraha played a pivotal role in India's independence struggle as it empowered people to resist British colonial rule without resorting to violence, legitimizing Indian demands on ethical grounds.\"\n        },\n        {\n            \"topic\": \"Non-Cooperation Movement\",\n            \"paragraphs\": \"Launched by Mahatma Gandhi in 1920, the Non-Cooperation Movement was a major campaign of civil disobedience and a significant facet of India's struggle for independence. Stemming from the discontent following the Jallianwala Bagh massacre and the imposition of harsh British policies, this movement sought to attain self-governance and reduce British dominance in India by refusing to comply with its authorities. Gandhi urged Indians to withdraw from British institutions, boycott foreign goods, and uphold Indian values and implements. Although the movement was suspended due to escalation into violence, its impact was substantial, marking a mass mobilization under Gandhi's leadership and sowing seeds for future independence endeavors.\"\n        },\n        {\n            \"topic\": \"Gandhi's Strategy for Indian Independence\",\n            \"paragraphs\": \"Gandhi's approach to Indian independence was multidimensional, involving not just political defiance but also social and economic reform. His strategies were encapsulated in large-scale movements like the Non-Cooperation Movement, the Civil Disobedience Movement, and the Quit India Movement. Gandhi aimed to build a self-reliant, united Indian society capable of resisting colonial rule through non-violent means. His emphasis on swadeshi, or the use of Indian-made goods, and promoting Khadi, homespun cloth, was part of his broader vision for an independent India. By advocating for societal reforms such as the removal of untouchability and uplifting rural India, Gandhi laid the groundwork for a new India that pursued political sovereignty alongside social justice.\"\n        },\n        {\n            \"topic\": \"Gandhi's Autobiography\",\n            \"paragraphs\": \"Mahatma Gandhi's autobiography, 'The Story of My Experiments with Truth' (Aatma Katha), is a deeply introspective account of his life and philosophical evolution. While Gandhi reflects comprehensively on various personal and political journeys, the book does not provide detailed coverage of each movement he led. It focuses more on the principles and events that shaped his beliefs rather than chronicling detailed historical accounts, giving readers insight into how his ideological underpinnings, such as truth and non-violence, evolved. This work serves as a testament to his continuous quest for self-improvement and his devotion to practicing what he considered truthful living, offering valuable philosophical insights into the man behind India’s freedom struggle.\"\n        }\n    ]\n}";
             resp = resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', '');
             
 
@@ -298,42 +327,6 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
                 print('Title: ${title}  \n  Content : ${content}' );
                 print('\n'); 
             } 
-            // checkListProvider.setFinalContent();
-
-
-            
-            // List<String> responses = resp.split('\n\n');
-            // for (int i=0; i < responses.length; i++) {
-
-            //       // "**Birth and Early Life:**\nMahatma Gandhi was born on October 2, 1869, in Porbandar, a coastal town in present-day Gujarat, India. His full name was Mohandas Karamchand Gandhi, and he would later become renowned as the 'Father of the Nation' in India due to his significant role in the country's struggle for independence from British rule.
-                  
-            //       String title='';
-            //       String content = '';
-            //       List<String> paragraph;
-            //       if (responses[i].contains(': ')) {
-            //         paragraph = responses[i].split(': ');  
-            //       } else {
-            //         paragraph = responses[i].split('\n');  
-            //       }
-                  
-
-            //       for (int j=0; j < paragraph.length; j++) {
-                      
-            //           if (j == 0) {
-            //               title = paragraph[0].replaceAll('*','').replaceAll('#', '');
-            //           } else {
-            //               content += paragraph[j].replaceAll('*', '#').replaceAll('#', '').replaceAll('"', '');
-            //           }
-                      
-            //           //print('Title: ${title}  \n  Content : ${content}' );
-            //           // print('\n');
-            //       }
-            //       print('Title: ${title}  \n  Content : ${content}' );
-
-            //       checkListProvider.addContent(title, content, '', Uint8List.fromList([],), isSelected: true );
-            // }
-            // checkListProvider.setFinalContent();
-
             return true;
         } catch (e) {
             print(e.toString());
@@ -344,7 +337,7 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
   /// this method will regenerate block specific content
   /// it will get the topic title and content from openai
   /// and regenerate the block content
-  Future<bool> regenerateBlockContent(BuildContext context, String title, String content) async {
+  Future<bool> addToBlockContent(BuildContext context, String title, String content) async {
     try {
 
       CheckListProvider checkListProvider = Provider.of<CheckListProvider>(context, listen: false);
@@ -354,10 +347,10 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
       List<dynamic> data = jsonDecode(resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', ''))['data'];
       
 
-      for (int i=0; i < data.length; i++) {
+      for (int j=0; j < data.length; j++) {
 
-        String subTitle = data[i]['topic'];
-        String subContent = data[i]['paragraph'];
+        String subTitle = data[j]['topic'];
+        String subContent = data[j]['paragraph'];
 
         if (subTitle != null && subContent != null) {
           int index = checkListProvider.listFinalContent.indexWhere((element) => element.name == title);

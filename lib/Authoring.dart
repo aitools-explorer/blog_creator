@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:blog_creator/Provider/Loaderprovider.dart';
+import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
 import 'package:blog_creator/controller/DataController.dart';
 import 'package:blog_creator/controller/ImageController.dart';
@@ -141,7 +142,7 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                                                         tooltip: 'Regenerate this content',
                                                         onPressed: () async {
                                                           loaderProvider.setLoading(true);
-                                                          await DataController().regenerateBlockContent(context, checkListProvider.listFinalContent[index].name, checkListProvider.listFinalContent[index].content);
+                                                          await DataController().addToBlockContent(context, checkListProvider.listFinalContent[index].name, checkListProvider.listFinalContent[index].content);
                                                           loaderProvider.setLoading(false);
                                                         },
                                                       ),
@@ -310,8 +311,15 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                     ),
                   ),
                   SizedBox(width: 16),
-                  ComponentButton(title: 'Re-Generate', onTap: () {
+                  ComponentButton(title: 'Add content', onTap: () {
                       addMoreBlockData(_controller.text);  
+                  }),
+
+                  ComponentButton( title: 'Re-generate blog', onTap: () async {
+                        loaderProvider.setLoading(true);
+                        await DataController().regenerate33BlogContent(context, '${Provider.of<ResearchDataProvider>(context, listen: false).getSelectedFacts()}, ${_controller.text}' );
+                        loaderProvider.setLoading(false);
+                    
                   }),
                   
             
@@ -366,7 +374,7 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
         if (value.isNotEmpty) {
           String blogTitle = Provider.of<ReviewProvider>(context, listen: false).title;
           loaderProvider.setLoading(true);
-          DataController().regenerateBlockContent(context, blogTitle, value).then((value) {
+          DataController().addToBlockContent(context, blogTitle, value).then((value) {
             loaderProvider.setLoading(false);
             if (value) {
               print('======> $value');

@@ -413,7 +413,6 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
   }
 
   getImage(String prompt) async {
-
       loaderProvider.setLoading(true);
       if (_tabImageController.index == 0) {
         await ImageController().getWebImages(context, 'Please provide landscape images of : '+prompt);
@@ -425,7 +424,6 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
         await DataController().getDataTableData(context, prompt);
       }
       loaderProvider.setLoading(false);
-
   }
 
   _buildTabularData(BuildContext context) {
@@ -502,7 +500,7 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
         const SizedBox(width: 16),
         
         ComponentButton(title: 'Back', onTap: () {
-            NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
+          NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
             homePageProvider.setPage(2);
         },),
         
@@ -512,16 +510,12 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
          title: 'Authoring',
          onTap: () async {
     
-            ResearchDataProvider researchDataProvider = Provider.of<ResearchDataProvider>(context, listen: false);
-            List<Modelfact> selectedFacts = researchDataProvider.factData.values.expand((facts) => facts).where((fact) => fact.isSelected).toList();
-    
-            String concatenatedString = selectedFacts.map((fact) => fact.factName).join(', ');
-            print('Selected fact: ${concatenatedString}');
-
+            
+            // String concatenatedString = Provider.of<ResearchDataProvider>(context, listen: false).getSelectedFacts();
+            // print('Selected fact: ${concatenatedString}');
             loaderProvider.setLoading(true);
-            await DataController().getBlogContent(context, concatenatedString);
-            loaderProvider.setLoading(false);
-        
+            await DataController().getBlogContent(context, Provider.of<ResearchDataProvider>(context, listen: false).getSelectedFacts());
+            loaderProvider.setLoading(false);        
             NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
             homePageProvider.setPage(4);
         
