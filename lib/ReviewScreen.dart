@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:blog_creator/Model/ModeContent.dart';
 import 'package:blog_creator/Provider/CheckboxProvider.dart';
+import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/NavigationProvider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
@@ -29,11 +30,13 @@ import 'dart:typed_data';
 class ReviewScreen extends StatelessWidget {
 
   late ReviewProvider reviewProvider;
+  late LoaderProvider loaderProvider;
 
   @override
   Widget build(BuildContext context) {
 
     reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
+    loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF1F5F9), // Light grayish blue,
@@ -149,7 +152,7 @@ class ReviewScreen extends StatelessWidget {
                     width: 200,
                     onTap: () {
                         NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
-                        homePageProvider.setPage(3);
+                        homePageProvider.setPage(4);
                     },
                   ),
                   const SizedBox(height: 16),
@@ -198,6 +201,7 @@ class ReviewScreen extends StatelessWidget {
                           final provider = Provider.of<ReviewProvider>(context, listen: false);
                           Uint8List pdfBytes;
                         
+                          loaderProvider.setLoading(true);
                           switch (provider.selectedTemplateName) {
                             
                             case 'Simple':
@@ -220,6 +224,7 @@ class ReviewScreen extends StatelessWidget {
                             default:
                               return null;
                           }
+                          loaderProvider.setLoading(false);
                         
                           // Create a blob and trigger download
                           final blob = html.Blob([pdfBytes], 'application/pdf');
@@ -248,7 +253,7 @@ class ReviewScreen extends StatelessWidget {
       return Image.memory(
         imageBytes,
         width: 250,
-        height: 250,
+        height: 150,
       );
     } else {
       return const Text('');
@@ -261,7 +266,7 @@ displayImage(String listImageUrl) {
     return Image.network(
       listImageUrl,
       width: 250,
-      height: 250,
+      height: 150,
     );
   } else {
     return const Text('');
@@ -486,11 +491,13 @@ class LanguageDropdown extends StatelessWidget {
           items: Provider.of<ReviewProvider>(context).availableLanguages.map((language) =>
             DropdownMenuItemComp(language)
           ).toList(),
-          onChanged: (String? value) {
+          onChanged: (String? value) async {
               if (value != null) {
-      
-                Provider.of<ReviewProvider>(context, listen: false).updateLanguage(value);
-      
+                
+                LoaderProvider loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
+                loaderProvider.setLoading(true);
+                await Provider.of<ReviewProvider>(context, listen: false).updateLanguage(value);
+                loaderProvider.setLoading(false);
               }
           },
           hint: const Padding(

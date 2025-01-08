@@ -365,7 +365,7 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
           if (index != -1) {
             checkListProvider.listFinalContent[index] = ModelBlogData(name: subTitle, content: subContent, imageUrls: checkListProvider.listFinalContent[index].imageUrls, imageBytes: checkListProvider.listFinalContent[index].imageBytes, tabularData: checkListProvider.listFinalContent[index].tabularData, selected: true );
           } else {
-            checkListProvider.addContent(subTitle, subContent, content, Uint8List.fromList([],), isSelected: false );
+            checkListProvider.addContent(subTitle, subContent, '', Uint8List.fromList([]), isSelected: true );
           }
         }
       }
@@ -391,6 +391,7 @@ Future<bool> getStatsData(BuildContext context, String prompt) async {
 
       print('------------> $jsonData');
 
+      // Map<String, dynamic> data = Map<String, dynamic>.from(jsonDecode(jsonData));
       Map<String, dynamic> data = jsonDecode(jsonData);
 
       getStatImage(context, data, ChartType.BAR.name);  

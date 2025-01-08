@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/controller/DataController.dart';
 import 'package:blog_creator/Research.dart';
 import 'package:blog_creator/Model/ModeContent.dart';
@@ -18,6 +19,8 @@ import 'components/ComponentButton.dart';
 class SelectTopic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    LoaderProvider loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
 
     final TextEditingController _controller = TextEditingController();
 
@@ -128,7 +131,10 @@ class SelectTopic extends StatelessWidget {
                          if (_controller.text.trim().isEmpty) {
                            CustomDialog().showCustomDialog(context, 'Error', 'Please add your own topic');
                          } else {
+
+                           loaderProvider.setLoading(true);
                            bool response = await DataController().fetchTitleData(context, _controller.text.trim());
+                           loaderProvider.setLoading(false);
 
                            if (response) {
                              NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);

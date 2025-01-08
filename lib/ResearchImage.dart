@@ -1,6 +1,7 @@
 import 'package:blog_creator/Network/WebImagesHandler.dart';
 import 'package:blog_creator/Provider/CheckListProvider.dart';
 import 'package:blog_creator/Provider/CheckboxProvider.dart';
+import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/NavigationProvider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
@@ -30,6 +31,7 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
   late TabController _tabImageController;
   late ResearchProvider researchProvider;
   final TextEditingController _contImage = TextEditingController();
+  late LoaderProvider loaderProvider;
 
   @override
   void initState() {
@@ -46,6 +48,7 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     
+    loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
     researchProvider = Provider.of<ResearchProvider>(context, listen: false);
     _tabImageController = TabController(length: 4, vsync: this);
 
@@ -54,7 +57,7 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
       body: DefaultTabController(
             length: 3,
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, bottom: 16, top: 16, right: 16),
+              padding: const EdgeInsets.only(left: 16.0, bottom: 16, right: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -74,8 +77,8 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
 
                     ],
                   ),
-
-                  const Text('Add images', style: TextStyle(fontSize: 18, color: Colors.black)),
+                  const Divider( thickness: 1, ),
+                  // const Text('Add images', style: TextStyle(fontSize: 18, color: Colors.black)),
                   
                   _imageGenerationView(),
                   
@@ -107,8 +110,10 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
+                    const SizedBox(width: 10),
                     const Text('Selected Facts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    const Divider( thickness: 1, ),
+                    
                     Expanded(
                       child: researchDataProvider.factData.values.expand((facts) => facts).where((fact) => fact.isSelected).toList().isEmpty ?
                       const Padding(
@@ -120,8 +125,10 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
                         itemCount: researchDataProvider.factData.values.expand((facts) => facts).where((fact) => fact.isSelected).toList().length,
                         itemBuilder: (context, index) {
                           Modelfact selectedFact = researchDataProvider.factData.values.expand((facts) => facts).where((fact) => fact.isSelected).toList()[index];
-                          return ListTile(
-                            title: Text(selectedFact.factName),
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 10.0, top: 5),
+                            child: Text('${index+1}. ${selectedFact.factName}', style: const TextStyle(fontSize: 14, color: Color(0xFF1A1A1A)),
+                            ),
                           );
                         },
                       ),
@@ -144,6 +151,7 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     const Text('Selected Images', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    const Divider( thickness: 1, ),
                     const SizedBox(height: 10),
                     _showSelectedImages(context),
                   ],
@@ -406,15 +414,17 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
 
   getImage(String prompt) async {
 
+      loaderProvider.setLoading(true);
       if (_tabImageController.index == 0) {
-        await ImageController().getWebImages(context, prompt);
+        await ImageController().getWebImages(context, 'Please provide landscape images of : '+prompt);
       } else if (_tabImageController.index == 1) {
-        await ImageController().getAIImage(context, prompt);
+        await ImageController().getAIImage(context, 'Please provide landscape images of : '+prompt);
       } else if (_tabImageController.index == 2) {
         await DataController().getStatsData(context, prompt);
       } else {
         await DataController().getDataTableData(context, prompt);
       }
+      loaderProvider.setLoading(false);
 
   }
 
@@ -492,7 +502,7 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
         const SizedBox(width: 16),
         
         ComponentButton(title: 'Back', onTap: () {
-          NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
+            NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
             homePageProvider.setPage(2);
         },),
         
@@ -507,8 +517,10 @@ class _ResearchImageState extends State<ResearchImage> with TickerProviderStateM
     
             String concatenatedString = selectedFacts.map((fact) => fact.factName).join(', ');
             print('Selected fact: ${concatenatedString}');
+
+            loaderProvider.setLoading(true);
             await DataController().getBlogContent(context, concatenatedString);
-          
+            loaderProvider.setLoading(false);
         
             NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
             homePageProvider.setPage(4);
