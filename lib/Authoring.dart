@@ -33,8 +33,6 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   TextEditingController _contSubTitle = TextEditingController();
 
   late LoaderProvider loaderProvider;
-  TextEditingController _contTitle = TextEditingController();
-  TextEditingController _contSubTitle = TextEditingController();
 
 
   @override
