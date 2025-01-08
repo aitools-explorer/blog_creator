@@ -45,6 +45,13 @@ class ResearchDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
+  String getSelectedFacts() {
+    List<Modelfact> selectedFacts = _factData.values.expand((facts) => facts).where((fact) => fact.isSelected).toList();
+    return selectedFacts.map((fact) => fact.factName).join(', ');
+  }
+            
+
   Map<String, List<Modelfact>> get factData => _factData;
 
   void reset() {
