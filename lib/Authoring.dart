@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
 import 'package:blog_creator/controller/DataController.dart';
 import 'package:blog_creator/controller/ImageController.dart';
@@ -28,6 +29,7 @@ class Authoring extends StatefulWidget {
 class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   late TabController _tabController;
   TextEditingController _controller = TextEditingController();
+  late LoaderProvider loaderProvider;
   TextEditingController _contTitle = TextEditingController();
   TextEditingController _contSubTitle = TextEditingController();
 
@@ -40,6 +42,10 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+    loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
+    TextEditingController _contTitle = TextEditingController();
+    TextEditingController _contSubTitle = TextEditingController();
 
     _contTitle.text =Provider.of<ReviewProvider>(context, listen: false).title;
     _contSubTitle.text =Provider.of<ReviewProvider>(context, listen: false).selectedTopic;
@@ -146,7 +152,9 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                                                         icon: Icon(Icons.replay, size: 18, color: Colors.blue),
                                                         tooltip: 'Regenerate this content',
                                                         onPressed: () async {
+                                                          loaderProvider.setLoading(true);
                                                           await DataController().regenerateBlockContent(context, checkListProvider.listFinalContent[index].name, checkListProvider.listFinalContent[index].content);
+                                                          loaderProvider.setLoading(false);
                                                         },
                                                       ),
                                                     ],
@@ -324,7 +332,7 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                   ComponentButton(title: 'Back', onTap: () {
                       
                       NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
-                      homePageProvider.setPage(2);
+                      homePageProvider.setPage(3);
                   },),
                   
                   SizedBox(width: 16),
@@ -332,7 +340,9 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                     title: 'Plagiarism',
                     onTap: () async {
                       CheckListProvider checkListProvider = Provider.of<CheckListProvider>(context, listen: false);
+                      loaderProvider.setLoading(true);
                       final response = await RapidApiHandler().getPlagiarismCheck(Provider.of<ReviewProvider>(context, listen: false).getFinalContent(checkListProvider.listFinalContent));
+                      loaderProvider.setLoading(false);
                       if (response > 0) {
                         CustomDialog().showCustomDialog(context, 'Plagiarism Detected', 'Plagiarism percentage: ${response}%');
                       } else {
@@ -367,7 +377,9 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
         
         if (value.isNotEmpty) {
           String blogTitle = Provider.of<ReviewProvider>(context, listen: false).title;
+          loaderProvider.setLoading(true);
           DataController().regenerateBlockContent(context, blogTitle, value).then((value) {
+            loaderProvider.setLoading(false);
             if (value) {
               print('======> $value');
               CheckListProvider().notify();
@@ -441,6 +453,7 @@ Widget getContent(CheckListProvider checkListProvider, int index) {
 
 // await BlogImageProvider().getNetworkImage(element.imageUrls);
 
+      loaderProvider.setLoading(true);
       for (var element in checkListProvider.listFinalContent) {
           if (element.selected) {
             element.imageBytes = await BlogImageProvider().getNetworkImage(element.imageUrls);
@@ -458,7 +471,7 @@ Widget getContent(CheckListProvider checkListProvider, int index) {
       reviewProvider.clearFinalContent();
       reviewProvider.clearOrigContent();
       reviewProvider.setOrigContent(content);
-      
+      loaderProvider.setLoading(false);
 
 
       NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);

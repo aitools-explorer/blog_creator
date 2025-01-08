@@ -8,7 +8,7 @@ class WebImagesHandler {
   Future<String> getPhotos(String query) async {
     
     final headers = {
-      'Authorization': NetworkConst.webApiKey
+      'Authorization': NetworkConst.base64Decode(NetworkConst.webApiKey)
     };
     
     final response = await ApiClient().get('${NetworkConst.webApiUrl}?query=$query&per_page=1&page=1',  headers);
@@ -32,7 +32,7 @@ class WebImagesHandler {
   Future<List<String>> getPhotosList(String query) async {
     
     final headers = {
-      'Authorization': NetworkConst.webApiKey
+      'Authorization': NetworkConst.base64Decode(NetworkConst.webApiKey)
     };
     
     final response = await ApiClient().get('${NetworkConst.webApiUrl}?query=$query&per_page=6&page=1',  headers);

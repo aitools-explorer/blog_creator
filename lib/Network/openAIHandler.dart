@@ -58,7 +58,7 @@ class openAIHandler {
     
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${NetworkConst.openAiKey}',
+      'Authorization': 'Bearer ${NetworkConst.base64Decode(NetworkConst.openAiKey)}',
     };
 
     final body = jsonEncode({

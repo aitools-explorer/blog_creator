@@ -4,6 +4,7 @@ import 'package:blog_creator/Authoring.dart';
 import 'package:blog_creator/Network/NetworkConst.dart';
 import 'package:blog_creator/Provider/ButtonProvider.dart';
 import 'package:blog_creator/Provider/CheckboxProvider.dart';
+import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
 import 'package:blog_creator/Provider/ResearchProvider.dart';
@@ -25,6 +26,7 @@ import 'package:flutter/material.dart';
 Future<void> main() async {
   // runApp(CognifyApp());
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => LoaderProvider()),
     ChangeNotifierProvider(create: (_) => NavigationProvider()),
     ChangeNotifierProvider(create: (_) => CheckListProvider()),
     ChangeNotifierProvider(create: (_) => ReviewProvider()),
@@ -57,7 +59,12 @@ class CognifyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     
     // initializeApp();
+    // print(base64Encode("ZjY45kZSxSjvH2GWbNBKh5FN8tzYGdTqxVDs2SRtMpcp1hc2YyFa9WXr"));
     
+
+    // print(NetworkConst.base64Decode('c2stcHJvai1CUzJ0SVYtYVFKMmFCbnVWOUM3TWhFQ0tqbmpRbzY4UVZNNUoycUtIb2h2Z0xJd3JLVlgtdVRXZ003ZC1PSFRjTHFBT2dvQllUM1QzQmxia0ZKNnhyaUtCaHVkeXV3VzhWaks4Q0tncEYwS21pME5PcTJNYTRya0MzOFJPTWRpZDNlU2Vmc2lNMHViSlVTR3FqNUljZ3o1QXg2NEE='));
+
+
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -67,7 +74,19 @@ class CognifyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          // title: Text("Cognify"),
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Consumer<NavigationProvider>(
+                builder: (context, navigationProvider, child) {
+                  return Text(
+                    navigationProvider.getTitle(),
+                    textAlign: TextAlign.left,
+                  );
+                },
+              ),
+            ],
+          ),
           backgroundColor: Color(0xFFF1F5F9), // Light grayish blue
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black), // Black menu icon
@@ -76,29 +95,35 @@ class CognifyApp extends StatelessWidget {
         drawer: CognifyDrawer(),
         
         
-        body: Consumer<NavigationProvider>(
-          builder: (context, homePageProvider, child) {
-        
-            switch (homePageProvider.pageIndex) {
-              case 0:
-                return HomePage();
-              case 1:
-                return SelectTopic();
-              case 2:
-                return Research();
-              case 3:
-                return ResearchImage();
-              case 4:
-                return Authoring();
-              case 5:
-                return ReviewScreen();
-              default:
-                return Text("default");
-            }
-          },
+        body: Stack(
+          children: [
+            
+            Consumer<NavigationProvider>(
+                builder: (context, homePageProvider, child) {
+                  return IndexedStack(
+                    index: homePageProvider.pageIndex,
+                    children: [
+                      HomePage(),
+                      SelectTopic(),
+                      Research(),
+                      ResearchImage(),
+                      Authoring(),
+                      ReviewScreen(),
+                      Text("default")
+                    ],
+                  );
+                },
+              ),   
+              Consumer<LoaderProvider>(builder: (context, loaderProvider, child) {
+                return loaderProvider.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : Text('');
+              },),
+          ]
         ),
       ),
     );
+    
   }
 }
 

@@ -12,4 +12,23 @@ class NavigationProvider extends ChangeNotifier {
     _pageIndex = index;
     notifyListeners();
   }
+
+  String getTitle() {
+    switch (_pageIndex) {
+      case 0:
+        return "Input Domain";
+      case 1:
+        return "Select Topic";
+      case 2:
+        return "Research Facts";
+      case 3:
+        return "Research Images";
+      case 4:
+        return "Authoring";
+      case 5:
+        return "Blog Review";
+      default:
+        return "";
+    }
+  }
 }

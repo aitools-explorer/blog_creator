@@ -1,3 +1,4 @@
+import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Research.dart';
 import 'package:blog_creator/ResearchImage.dart';
@@ -20,11 +21,13 @@ import 'package:provider/provider.dart';
 class HomePage extends StatelessWidget {
 
   final TextEditingController _controller = TextEditingController();
+  late LoaderProvider loaderProvider;
 
   @override
   Widget build(BuildContext context) {
     // MediaQuery for responsive design
     // final size = MediaQuery.of(context).size;
+    loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
     
     
     return Container(
@@ -111,14 +114,8 @@ class HomePage extends StatelessWidget {
                      title: 'Next',
                      onTap: () async {
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ResearchImage(),
-                          ),
-                        );
                         
-                        // fetchSubDomain(context, _controller.text.trim());
+                        fetchSubDomain(context, _controller.text.trim());
 
                         // DataController().getImageData(context, 'prompt');
 
@@ -146,10 +143,11 @@ class HomePage extends StatelessWidget {
         ReviewProvider reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
         // reviewProvider.suggestedTopics.
         reviewProvider.setTitle(topic);
-
-
+        
+        loaderProvider.setLoading(true);
         bool response = await DataController().fetchTitleData(context, topic);
-
+        loaderProvider.setLoading(false);
+        
         if (response) {
           NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
           homePageProvider.setPage(1);
