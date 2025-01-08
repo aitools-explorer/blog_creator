@@ -354,10 +354,10 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
       List<dynamic> data = jsonDecode(resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', ''))['data'];
       
 
-      for (int i=0; i < data.length; i++) {
+      for (int j=0; j < data.length; j++) {
 
-        String subTitle = data[i]['topic'];
-        String subContent = data[i]['paragraph'];
+        String subTitle = data[j]['topic'];
+        String subContent = data[j]['paragraph'];
 
         if (subTitle != null && subContent != null) {
           int index = checkListProvider.listFinalContent.indexWhere((element) => element.name == title);
