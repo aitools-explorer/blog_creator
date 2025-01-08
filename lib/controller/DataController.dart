@@ -351,9 +351,8 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
 
       String prompt = 'Avoid extra spaces, escape notations such as \\n etc, from the result. Provide big detail description for a blog. Result in format of { \"data\" : [{\"topic\": \"\", \"paragraph\": \'\'}}  on';
       String resp = await openAIHandler().getChatGPTResponse('${prompt} ${title.trim()} : ${content.trim()}');
+      List<dynamic> data = jsonDecode(resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', ''))['data'];
       
-      resp = resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', '');
-      List<dynamic> data =  jsonDecode(resp)['data'];
 
       for (int i=0; i < data.length; i++) {
 
@@ -378,6 +377,43 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
       return false;
     }
   }
+
+
+  // code for backup
+  // Future<bool> regenerateBlockContent(BuildContext context, String title, String content) async {
+  //   try {
+
+  //     CheckListProvider checkListProvider = Provider.of<CheckListProvider>(context, listen: false);
+
+  //     String prompt = 'Avoid extra spaces, escape notations such as \\n etc, from the result. Provide big detail description for a blog. Result in format of { \"data\" : [{\"topic\": \"\", \"paragraph\": \'\'}}  on';
+  //     String resp = await openAIHandler().getChatGPTResponse('${prompt} ${title.trim()} : ${content.trim()}');
+      
+  //     resp = resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', '');
+  //     List<dynamic> data =  jsonDecode(resp)['data'];
+
+  //     for (int i=0; i < data.length; i++) {
+
+  //       String subTitle = data[i]['topic'];
+  //       String subContent = data[i]['paragraph'];
+
+  //       if (subTitle != null && subContent != null) {
+  //         int index = checkListProvider.listFinalContent.indexWhere((element) => element.name == title);
+  //         if (index != -1) {
+  //           checkListProvider.listFinalContent[index] = ModelBlogData(name: subTitle, content: subContent, imageUrls: checkListProvider.listFinalContent[index].imageUrls, imageBytes: checkListProvider.listFinalContent[index].imageBytes, tabularData: checkListProvider.listFinalContent[index].tabularData, selected: true );
+  //         } else {
+  //           checkListProvider.addContent(subTitle, subContent, content, Uint8List.fromList([],), isSelected: false );
+  //         }
+  //       }
+  //     }
+
+  //     checkListProvider.notify();
+
+  //     return true;
+  //   } catch (e) {
+  //     print(e.toString());
+  //     return false;
+  //   }
+  // }
 
 
 Future<bool> getStatsData(BuildContext context, String prompt) async {
