@@ -29,6 +29,9 @@ class Authoring extends StatefulWidget {
 class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   late TabController _tabController;
   TextEditingController _controller = TextEditingController();
+  TextEditingController _contTitle = TextEditingController();
+  TextEditingController _contSubTitle = TextEditingController();
+
   late LoaderProvider loaderProvider;
   TextEditingController _contTitle = TextEditingController();
   TextEditingController _contSubTitle = TextEditingController();
@@ -44,9 +47,6 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
 
     loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
-    TextEditingController _contTitle = TextEditingController();
-    TextEditingController _contSubTitle = TextEditingController();
-    String title = '';
 
     _contTitle.text =Provider.of<ReviewProvider>(context, listen: false).title;
     _contSubTitle.text =Provider.of<ReviewProvider>(context, listen: false).selectedTopic;
