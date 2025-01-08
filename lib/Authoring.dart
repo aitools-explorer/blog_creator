@@ -44,9 +44,7 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
 
     loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
-    TextEditingController _contTitle = TextEditingController();
-    TextEditingController _contSubTitle = TextEditingController();
-    String title = '';
+    
 
     _contTitle.text =Provider.of<ReviewProvider>(context, listen: false).title;
     _contSubTitle.text =Provider.of<ReviewProvider>(context, listen: false).selectedTopic;
