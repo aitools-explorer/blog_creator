@@ -28,10 +28,11 @@ class Authoring extends StatefulWidget {
 
 class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   late TabController _tabController;
-  late LoaderProvider loaderProvider;
   TextEditingController _controller = TextEditingController();
   TextEditingController _contTitle = TextEditingController();
   TextEditingController _contSubTitle = TextEditingController();
+
+  late LoaderProvider loaderProvider;
 
 
   @override
