@@ -30,6 +30,9 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
   late TabController _tabController;
   TextEditingController _controller = TextEditingController();
   late LoaderProvider loaderProvider;
+  TextEditingController _contTitle = TextEditingController();
+  TextEditingController _contSubTitle = TextEditingController();
+
 
   @override
   void initState() {
@@ -48,7 +51,7 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
     _contTitle.text =Provider.of<ReviewProvider>(context, listen: false).title;
     _contSubTitle.text =Provider.of<ReviewProvider>(context, listen: false).selectedTopic;
 
-    CheckListProvider chkProvider = Provider.of<CheckListProvider>(context, listen: false);
+    
   // if (chkProvider.listFinalContent.isEmpty) {
   //     chkProvider.addContent('Title 1', 'Content 1', '', Uint8List.fromList([]), isSelected: true);
   //     chkProvider.addContent('Title 2', 'Content 2', '', Uint8List.fromList([]),  isSelected: true);
@@ -73,12 +76,12 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
             SizedBox(height: 3),
             
             CompTextField.getEditText(controller: _contTitle, hint: 'Write your blog topic here'),
-
             const SizedBox(height: 15),
+
             const Text('Sub Topic', style: TextStyle(fontSize: 14, color: Colors.black54)),
             const SizedBox(height: 3),
-            CompTextField.getEditText(controller: _contSubTitle, hint: 'Write your blog sub - topic here'),
             
+            CompTextField.getEditText(controller: _contSubTitle, hint: 'Write your blog sub - topic here'),
             const SizedBox(height: 15), // Spacing
             
             Expanded(
@@ -253,6 +256,7 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                           itemBuilder: (context, index) {
 
                             if (researchImageProvider.selectedImages[index].contains('|')) {
+
                                 print('Display table');
                                 return Draggable<String>(
                                   data: researchImageProvider.selectedImages[index],
@@ -295,30 +299,6 @@ class _Authoring extends State<Authoring> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-
-                // Expanded(
-                //   child: Consumer<CheckListProvider>(
-                //     builder: (context, checkListProvider, child) {
-                //       return GridView.builder(
-                //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                //           crossAxisCount: 2,
-                //           crossAxisSpacing: 8,
-                //           mainAxisSpacing: 8,
-                //         ),
-                //         itemCount: checkListProvider.listSelectedContent.length,
-                //         itemBuilder: (context, index) {
-                //           return Image.memory(
-                //                     checkListProvider.listSelectedContent[index].imageBytes,
-                //                     // width: 250,
-                //                     // height: 250,
-                //                   );
-                //         },
-                //       );
-                //     },
-                //   ),
-                // ),
-
-
 
               ],
                             ),
