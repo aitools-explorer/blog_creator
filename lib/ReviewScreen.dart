@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:blog_creator/Model/ModeContent.dart';
 import 'package:blog_creator/Provider/CheckboxProvider.dart';
@@ -10,6 +11,7 @@ import 'package:blog_creator/Research.dart';
 import 'package:blog_creator/Utils/BlogImageProvider.dart';
 import 'package:blog_creator/Provider/CheckListProvider.dart';
 import 'package:blog_creator/Provider/ReviewProvider.dart';
+import 'package:blog_creator/Utils/FileHandler.dart';
 import 'package:blog_creator/components/ComponentButton.dart';
 import 'package:blog_creator/Template/PdfSimple.dart';
 import 'package:blog_creator/Template/PdfSimpleRight.dart';
@@ -163,7 +165,6 @@ class ReviewScreen extends StatelessWidget {
                     onTap: () {
 
                       CheckListProvider checkListProvider = Provider.of<CheckListProvider>(context, listen: false);
-                      // checkListProvider.listSelectedContent.clear();
                       checkListProvider.listFinalContent.clear();
 
                       ReviewProvider reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
@@ -176,7 +177,7 @@ class ReviewScreen extends StatelessWidget {
                       researchDataProvider.reset();
 
                       ResearchImageProvider researchImageProvider = Provider.of<ResearchImageProvider>(context, listen: false);
-                      researchImageProvider.reset();                    
+                      researchImageProvider.reset();
 
                       NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
                       homePageProvider.setPage(0);
@@ -192,6 +193,16 @@ class ReviewScreen extends StatelessWidget {
                   TemplateDropdown(),
                   
                   const Spacer(),
+
+                  ComponentButton(
+                    title: 'Save as Draft',
+                    width: 200,
+                    onTap: () {
+                      // Logic for saving as draft
+                      // Example: saving state to a provider or local storage
+                      FileHandler.saveToLocalStorage(context);
+                    },
+                  ),
                         
                   ComponentButton(
                     title: 'Export to PDF',
@@ -465,6 +476,8 @@ displayImage(String listImageUrl) {
         return templateSimpleLeft(context, index); 
     }
   }
+  
+  
   
 
 }

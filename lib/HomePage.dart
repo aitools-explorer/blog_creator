@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Research.dart';
 import 'package:blog_creator/ResearchImage.dart';
+import 'package:blog_creator/Utils/FileHandler.dart';
 import 'package:blog_creator/controller/DataController.dart';
 import 'package:blog_creator/samplaClass/DragAndDropView.dart';
 import 'package:blog_creator/samplaClass/DynamicTabBar.dart';
@@ -114,16 +117,28 @@ class HomePage extends StatelessWidget {
                      title: 'Next',
                      onTap: () async {
 
-                        
                         fetchSubDomain(context, _controller.text.trim());
-
-                        // DataController().getImageData(context, 'prompt');
-
-                        // PDFGenerator pdfTemplate = PDFGenerator();
-                        // pdfTemplate.createPdf();
 
                   }),
                 ),
+
+
+              SizedBox(height: 20),
+              CompContainer.getContainer(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Load Existing Draft Content', style: TextStyle(color: Colors.grey),),
+                    SizedBox(height: 10),
+                    ComponentButton(
+                      title: 'Load',
+                      onTap: () async {
+                        await FileHandler.readFromFile(context);
+                      },
+                    )
+                  ],
+                ),
+              ),
 
             
               
