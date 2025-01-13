@@ -55,6 +55,7 @@ class ReviewProvider extends ChangeNotifier {
     await convertLanguage();
     notifyListeners();
   }
+  
 
 
 
@@ -64,6 +65,14 @@ class ReviewProvider extends ChangeNotifier {
     _selectedTemplateName = templateName;
     notifyListeners();
   }
+
+void setSelectedLanguage(String language) {
+    _selectedLanguage = language;
+  }
+void setSelectedTemplateName(String templateName) {
+  _selectedTemplateName = templateName;
+}
+
 
 
   final List<String> _availableTemplateNames = ['Simple', 'Simple Right', 'Simple Left', 'Alternate', 'List And Bullet Points', 'Table And Image'];

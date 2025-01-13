@@ -5,6 +5,10 @@ class ResearchProvider extends ChangeNotifier {
   List<String> _tabs = ['Tab 1'];
   List<String> get tabs => _tabs;
   
+  
+  void setTabs(List<String> tabs) {
+    _tabs = tabs;
+  }
 
   void addTab(String tab) {
     _tabs.add(tab);
