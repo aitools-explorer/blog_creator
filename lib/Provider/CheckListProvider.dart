@@ -18,8 +18,10 @@ class CheckListProvider extends ChangeNotifier {
   }
 
   void toggleModeContentSelection(int index) {
-    _listFinalContent[index].selected = !_listFinalContent[index].selected;
-    notifyListeners();
+    if (index >= 0 && index < _listFinalContent.length) {
+      _listFinalContent[index].selected = !_listFinalContent[index].selected;
+      notifyListeners();
+    }
   }
 
   void reset() {
