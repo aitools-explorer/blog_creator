@@ -270,14 +270,11 @@ Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blog
           try {
               String prompt = "Avoid extra spaces, escape notations such as \n etc, from the result. Provide big detail description for a blog.:";
               prompt= "Avoid extra spaces, escape notations such as \n etc, from the result. Provide big detail description for a blog. Result in format of { \"data\" : [{\"topic\": \"\", \"paragraph\": ''}, {\"topic\": '', \"paragraph\": ''}] } by occurance order on :";
+              
               String resp = await openAIHandler().getChatGPTResponse('$prompt $facts');
               resp = resp.replaceAll('\n', '').replaceAll('  ', '').replaceAll('`', '').replaceAll('json', '');
-              
-
               print('resp : ${resp}');
               List<dynamic> data =  jsonDecode(resp)['data'];
-
-              
 
               for (int i=0; i < data.length; i++) {
 
