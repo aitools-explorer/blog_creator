@@ -19,6 +19,14 @@ class ModelStats {
     required this.type,
     this.isSelected = false,
   });
+
+  static Future<ModelStats> fromJson(Map<String, dynamic> json) async {
+    return ModelStats(
+      stats: json['stats'],
+      url: json['url'],
+      type: json['type'],
+    );
+  }
 }
 
 class ResearchImageProvider with ChangeNotifier {
@@ -31,7 +39,7 @@ class ResearchImageProvider with ChangeNotifier {
     _webImages = imageUrls.map((url) => ModelImage(imageUrl: url)).toList();
     notifyListeners();
   }
-
+  
   void setAIImages(List<String> imageUrls) {
     _aiImages = imageUrls.map((url) => ModelImage(imageUrl: url)).toList();
     notifyListeners();
@@ -62,7 +70,15 @@ class ResearchImageProvider with ChangeNotifier {
 
 
 
-  List<String> _selectedImages = [];
+List<String> _selectedImages = [];
+
+void setSelectedImages(List<String> imageUrls) {
+  _selectedImages = imageUrls;
+  notifyListeners();
+}
+
+List<String> get selectedImages => _selectedImages;
+
 
   void addImageFromSelectedList(String url) {
     if (!_selectedImages.contains(url)) {
@@ -78,8 +94,6 @@ class ResearchImageProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> get selectedImages => _selectedImages;
-
   void notify() {
     notifyListeners();
   }
@@ -91,6 +105,11 @@ List<ModelStats> _modelStats = [];
 
 void setModelStats(ModelStats modelStats) {
     _modelStats.add(modelStats);
+    notifyListeners();
+}
+
+void setModelStatsList(List<ModelStats> modelStatsList) {
+    _modelStats = modelStatsList;
     notifyListeners();
 }
 
@@ -110,6 +129,10 @@ void toggleModelStatsSelection(int index) {
   void setModelTable(ModelStats modelStats) {
     _modelTable.add(modelStats);
     notifyListeners();
+  }
+
+  void setModelTableList(List<ModelStats> modelStatsList) {
+    _modelTable = modelStatsList;
   }
 
   void toggleModelTableSelection(int index) {

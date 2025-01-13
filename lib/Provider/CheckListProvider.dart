@@ -11,12 +11,10 @@ class CheckListProvider extends ChangeNotifier {
   List<ModelBlogData> get listFinalContent => _listFinalContent;
 
 
-  // void setFinalContent() {
+  void setFinalContent(List<ModelBlogData> content) {
 
-  //   _listFinalContent = listSelectedContent
-  //                           .where((item) => item.selected)
-  //                           .toList();
-  // }
+    _listFinalContent = content;
+  }
 
   // List<ModelBlogData> _listSelectedContent = [];
 
