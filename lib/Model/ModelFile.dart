@@ -42,13 +42,13 @@ class ModelFile {
     // print('3-----> ${research?.toJson()}\n\n');
     // print('4-----> ${researchData?.toJson()}\n\n');
     // print('5-----> ${researchImage?.toJson()}\n\n');
-    String a = {
-      "checkList": checkList.map((item) => item.toJson()).toList(),
-      "review": review?.toJson(),
-      "research": research?.toJson(),
-      "researchData": researchData?.toJson(),
-      "researchImage": researchImage?.toJson(),
-    }.toString();
+    // String a = {
+    //   "checkList": checkList.map((item) => item.toJson()).toList(),
+    //   "review": review?.toJson(),
+    //   "research": research?.toJson(),
+    //   "researchData": researchData?.toJson(),
+    //   "researchImage": researchImage?.toJson(),
+    // }.toString();
     
 
     return {
@@ -124,12 +124,12 @@ class ModelFile {
       
 class ResearchImage {
 final List<String> images;
-final List<String> webImages;
-final List<String> aiImages;
+final List<ModelImage> webImages;
+final List<ModelImage> aiImages;
 final List<ModelStats> modelStats;
 final List<ModelStats> modelTable;
 const ResearchImage({this.images = const [], this.webImages = const [], this.aiImages = const [], this.modelStats = const [], this.modelTable = const [] });
-ResearchImage copyWith({List<String>? images, List<String>? webImages, List<String>? aiImages, List<ModelStats>? modelStats, List<ModelStats>? modelTable}){
+ResearchImage copyWith({List<String>? images, List<ModelImage>? webImages, List<ModelImage>? aiImages, List<ModelStats>? modelStats, List<ModelStats>? modelTable}){
 return ResearchImage(
             images:images ?? this.images,
             webImages:webImages ?? this.webImages,
@@ -139,21 +139,32 @@ return ResearchImage(
         );
         }
         
-Map<String,Object?> toJson(){
-    return {
-            'images': images,
-            'webImages': webImages,
-            'aiImages': aiImages,
-            'modelStats': modelStats,
-            'modelTable': modelTable
-    };
+Map<String, dynamic> toJson() {
+  return {
+    'images': images,
+    'webImages': webImages.map((e) {
+        return e.toJson();
+    }, ).toList(),
+    'aiImages': aiImages.map((e) => e.toJson()).toList(),
+    'modelStats': modelStats.map((e) => e.toJson()).toList(),
+    'modelTable': modelTable.map((e) => e.toJson()).toList(),
+  };
 }
+
 
 static ResearchImage fromJson(Map<String , Object?> json){
     return ResearchImage(
-            images:json['images'] == null ? [] : json['images'] as List<String>,
-            webImages:json['webImages'] == null ? [] : json['webImages'] as List<String>,
-            aiImages:json['aiImages'] == null ? [] : json['aiImages'] as List<String>,
+            images: json['images'] == null ? [] : List<String>.from(json['images'] as List<dynamic>),
+            webImages:json['webImages'] == null ? [] : (json['webImages'] as List<dynamic>).map((e) => ModelImage(
+                  imageUrl: e['imageUrl'],
+                  isSelected: e['isSelected'],
+                )
+              ).toList(),
+            aiImages:json['aiImages'] == null ? [] : (json['aiImages'] as List<dynamic>).map((e) => ModelImage(
+                  imageUrl: e['imageUrl'],
+                  isSelected: e['isSelected'],
+                )
+              ).toList(),
             modelStats:json['modelStats'] == null ? [] : (json['modelStats'] as List<dynamic>).map((e) => ModelStats(
               stats: Map<String, dynamic>.from(e['stats'] as Map),
               url: e['url'] as String,
@@ -170,15 +181,11 @@ static ResearchImage fromJson(Map<String , Object?> json){
 }
 
 @override
-String toString(){
-    return '''ResearchImage(
-                images:$images,
-                webImages:$webImages,
-                aiImages:$aiImages,
-                modelStats:$modelStats,
-                modelTable:$modelTable
-    ) ''';
+String toString() {
+  return 'ResearchImage(images: $images, webImages: $webImages, aiImages: $aiImages, modelStats: $modelStats, modelTable: $modelTable)';
 }
+
+
 
       
 @override
@@ -283,7 +290,7 @@ Map<String,Object?> toJson(){
 static Research fromJson(Map<String , Object?> json){
     return Research(
             tabs:json['tabs'] == null ? null : List<String>.from(json['tabs'] as List<dynamic>),
-selectedTabName:json['selectedTabName'] == null ? null : json['selectedTabName'] as String
+            selectedTabName:json['selectedTabName'] == null ? null : json['selectedTabName'] as String
     );
 }
 
@@ -291,7 +298,7 @@ selectedTabName:json['selectedTabName'] == null ? null : json['selectedTabName']
 String toString(){
     return '''Research(
                 tabs:$tabs,
-selectedTabName:$selectedTabName
+                selectedTabName:$selectedTabName
     ) ''';
 }
 

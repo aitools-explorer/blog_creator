@@ -5,6 +5,22 @@ class ModelImage {
   bool isSelected;
 
   ModelImage({required this.imageUrl, this.isSelected = false});
+
+  
+  factory ModelImage.fromJson(Map<String, dynamic> json) {
+    return ModelImage(
+      imageUrl: json['imageUrl'],
+      isSelected: json['isSelected'],
+    );
+  }
+
+  
+  Map<String, dynamic> toJson() {
+    return {
+      'imageUrl': imageUrl,
+      'isSelected': isSelected,
+    };
+  }
 }
 
 class ModelStats {
@@ -25,23 +41,48 @@ class ModelStats {
       stats: json['stats'],
       url: json['url'],
       type: json['type'],
+      isSelected: json['isSelected'] ?? false,
     );
+  }
+
+  
+  Map<String, dynamic> toJson() {
+    return {
+      'stats': stats,
+      'url': url,
+      'type': type,
+      'isSelected': isSelected,
+    };
   }
 }
 
 class ResearchImageProvider with ChangeNotifier {
 
 
+  List<String> _selectedImages = [];
   List<ModelImage> _webImages = [];
   List<ModelImage> _aiImages = [];
+  List<ModelStats> _modelStats = [];
+  List<ModelStats> _modelTable = [];
+
 
   void setWebImages(List<String> imageUrls) {
     _webImages = imageUrls.map((url) => ModelImage(imageUrl: url)).toList();
     notifyListeners();
   }
+
+  void setWebImagesModel(List<ModelImage> images) {
+    _webImages = images;
+    notifyListeners();
+  }
   
   void setAIImages(List<String> imageUrls) {
     _aiImages = imageUrls.map((url) => ModelImage(imageUrl: url)).toList();
+    notifyListeners();
+  }
+
+  void setAIImagesModel(List<ModelImage> images) {
+    _aiImages = images;
     notifyListeners();
   }
 
@@ -70,7 +111,7 @@ class ResearchImageProvider with ChangeNotifier {
 
 
 
-List<String> _selectedImages = [];
+
 
 void setSelectedImages(List<String> imageUrls) {
   _selectedImages = imageUrls;
@@ -99,10 +140,6 @@ List<String> get selectedImages => _selectedImages;
   }
 
 
-
-
-List<ModelStats> _modelStats = [];
-
 void setModelStats(ModelStats modelStats) {
     _modelStats.add(modelStats);
     notifyListeners();
@@ -122,7 +159,7 @@ void toggleModelStatsSelection(int index) {
   }
 }
 
-  List<ModelStats> _modelTable = [];
+  
 
   List<ModelStats> get modelTable => _modelTable;
 
@@ -145,18 +182,13 @@ void toggleModelStatsSelection(int index) {
   
 
   void reset() {
-    _modelStats.clear();
+    
     _selectedImages.clear();
-    _webImages.forEach((element) => element.isSelected = false);
-    _aiImages.forEach((element) => element.isSelected = false);
+    _webImages.clear();
+    _aiImages.clear();
+    _modelStats.clear();
+    _modelTable.clear();
     notifyListeners();
   }
-
-
-
-
-
-
-
 
 }

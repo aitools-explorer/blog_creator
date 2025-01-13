@@ -49,7 +49,9 @@ class PdfSimpleTemplate{
                       if(item.imageUrls.isNotEmpty) pw.Image(pw.MemoryImage(item.imageBytes.buffer.asUint8List(),), height: 100, width: 100,  ),
                       if(item.imageUrls.isNotEmpty) pw.SizedBox(width: 12),
                       pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.center,
+                        mainAxisSize: pw.MainAxisSize.max,
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
                         children: [
                           pw.Text(
                             item.content,

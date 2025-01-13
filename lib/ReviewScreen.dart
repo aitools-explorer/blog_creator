@@ -378,11 +378,13 @@ displayImage(String listImageUrl) {
 
                     const SizedBox(width: 10),
                     if (provider.listFinalContent[index].tabularData.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.center)), 
+                      Container(
+                        width: double.infinity,
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.left), 
+                        ),
                       ),
                     
                     // displayBlogContent(provider.listFinalContent[index].content),
@@ -423,10 +425,14 @@ displayImage(String listImageUrl) {
                   ),
                   const SizedBox(width: 10),
                   if (provider.listFinalContent[index].tabularData.isNotEmpty)
-                    Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.center), 
-                    ),
+                      Container(
+                        width: double.infinity,
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.left), 
+                        ),
+                      ),
                 ],
               ),
             );
@@ -458,11 +464,15 @@ displayImage(String listImageUrl) {
                           
                     ],
                   ),
-                  if (provider.listFinalContent[index].tabularData.isNotEmpty) 
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2.0),
-                      child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.center),
-                    ),
+                  if (provider.listFinalContent[index].tabularData.isNotEmpty)
+                      Container(
+                        width: double.infinity,
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.left), 
+                        ),
+                      ),
                 ],
               ),
             );

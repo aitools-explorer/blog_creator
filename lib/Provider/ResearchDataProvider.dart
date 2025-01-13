@@ -27,8 +27,21 @@ class Modelfact {
         : ResearchData(
             facts: Map<String, List<Modelfact>>.from(
                 Map<String, dynamic>.from(map['facts'] as Map<String, dynamic>).map((key, value) => 
-                    MapEntry(key, (value as List<dynamic>).map((fact) => Modelfact.fromJson(Map<String, dynamic>.from(fact))).toList()))));
+                    MapEntry(key, (value as List<dynamic>).map((fact) => Modelfact.fromJsons(Map<String, dynamic>.from(fact))).toList()))));
   }
+
+  
+  factory Modelfact.fromJsons(Map<String, dynamic> json) => Modelfact(
+        factName: json['factName'],
+        isSelected: json['isSelected'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'factName': factName,
+        'isSelected': isSelected,
+  };
+
+  
 }
 
 class ResearchDataProvider with ChangeNotifier {
