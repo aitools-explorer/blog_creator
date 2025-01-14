@@ -93,9 +93,9 @@ static Future<void> readFromFile(BuildContext context) async {
             researchImageProvider.setSelectedImages(modelFile.researchImage?.images ?? []);
 
             print('12 -----------');
-            researchImageProvider.setWebImages(modelFile.researchImage?.webImages ?? []);
+            researchImageProvider.setWebImagesModel(modelFile.researchImage?.webImages ?? []);
             print('13 -----------');
-            researchImageProvider.setAIImages(modelFile.researchImage?.aiImages ?? []);
+            researchImageProvider.setAIImagesModel(modelFile.researchImage?.aiImages ?? []);
 
             print('14 -----------');
             researchImageProvider.setModelStatsList(modelFile.researchImage?.modelStats ?? <ModelStats>[]);
@@ -142,13 +142,13 @@ static Future<void> saveToLocalStorage(BuildContext context) async {
       researchData: ResearchData(
         facts: researchDataProvider.getAllFacts(),
       ),
-      // researchImage: ResearchImage(
-      //   images: researchImageProvider.selectedImages,
-      //   webImages: researchImageProvider.webImages,
-      //   aiImages: researchImageProvider.aiImages,
-      //   modelStats: researchImageProvider.modelStats,
-      //   modelTable: researchImageProvider.modelTable,
-      // ),
+      researchImage: ResearchImage(
+        images: researchImageProvider.selectedImages,
+        webImages: researchImageProvider.webImages,
+        aiImages: researchImageProvider.aiImages,
+        modelStats: researchImageProvider.modelStats,
+        modelTable: researchImageProvider.modelTable,
+      ),
     );
 
     

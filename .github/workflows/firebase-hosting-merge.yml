@@ -29,18 +29,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # - name: Install Flutter
-      #   run: |
-      #     wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_stable.tar.xz
-      #     tar xvf flutter_linux_stable.tar.xz
-      #     export PATH=$PATH:$PWD/flutter/bin
-
-      - name: Install Flutter
-        run: |
-          git clone https://github.com/flutter/flutter.git /usr/local/flutter
-          export PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
+    
+      - name: Setup Flutter
+          uses: subosito/flutter-action@v2
+          with:
+            channel: 'stable'
+          # flutter-version: '3.16.8'
+          # ^ If you want to use a specific version of flutter
       - name: Install dependencies
         run: flutter pub get
+
       - name: Build and deploy
         run: flutter build web
       - uses: FirebaseExtended/action-hosting-deploy@v0
