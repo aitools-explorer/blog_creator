@@ -32,10 +32,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Update Machine
-        run: apt-get update
-        run: apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
-        run: apt-get clean
-        run: git clone https://github.com/flutter/flutter.git /usr/local/flutter
+        run: |
+          apt-get update
+          apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
+          apt-get clean
+          git clone https://github.com/flutter/flutter.git /usr/local/flutter
     
       
       - name: Install dependencies
