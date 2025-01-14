@@ -26,16 +26,17 @@ on:
       - main
 jobs:
   build_and_deploy:
-    runs-on: ubuntu-latest
+    runs-on: node:21.7.3
     steps:
       - uses: actions/checkout@v4
+
+      - name: Update Machine
+        run: apt-get update
+        run: apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
+        run: apt-get clean
+        run: git clone https://github.com/flutter/flutter.git /usr/local/flutter
     
-      - name: Setup Flutter
-          uses: subosito/flutter-action@v2
-          with:
-            channel: 'stable'
-          # flutter-version: '3.16.8'
-          # ^ If you want to use a specific version of flutter
+      
       - name: Install dependencies
         run: flutter pub get
 
