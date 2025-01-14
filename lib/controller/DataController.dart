@@ -26,7 +26,8 @@ class DataController {
         try {
             // String resp = await openAIHandler().getChatGPTResponse('suggest 10 latest topics for blog creation without extra content');
             String resp = "1. The Future of Renewable Energy Technologies\n2. Mental Health Awareness in the Digital Age\n3. The Impact of Remote Work on Corporate Culture\n4. Minimalism: Living with Less in a Consumer-Driven World\n5. Exploring the World of Plant-Based Diets\n6. Virtual Reality: Transforming Education and Training\n7. The Evolution of Social Media Marketing Strategies\n8. The Rise of Cryptocurrency: Opportunities and Challenges\n9. DIY Sustainable Home Projects for Beginners\n10. The Art of Mindfulness in a Fast-Paced World";
-             
+            await Future.delayed(const Duration(seconds: 1));
+            
             
             List<String> topics = [];
             List<String> response = resp.split('\n');

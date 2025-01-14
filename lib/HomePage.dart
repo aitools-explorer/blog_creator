@@ -124,21 +124,14 @@ class HomePage extends StatelessWidget {
 
 
               SizedBox(height: 20),
-              CompContainer.getContainer(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Load Existing Draft Content', style: TextStyle(color: Colors.grey),),
-                    SizedBox(height: 10),
-                    ComponentButton(
-                      title: 'Load',
-                      onTap: () async {
-                        await FileHandler.readFromFile(context);
-                      },
-                    )
-                  ],
-                ),
-              ),
+              Text('Load Existing Draft Content', style: TextStyle(color: Colors.grey),),
+              SizedBox(height: 10),
+              ComponentButton(
+                title: 'Load',
+                onTap: () async {
+                  await FileHandler.readFromFile(context);
+                },
+              )
 
             
               
