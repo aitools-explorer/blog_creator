@@ -1,27 +1,17 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:blog_creator/Model/ModeContent.dart';
-import 'package:blog_creator/Provider/CheckboxProvider.dart';
 import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/NavigationProvider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
 import 'package:blog_creator/Provider/ResearchProvider.dart';
-import 'package:blog_creator/Research.dart';
-import 'package:blog_creator/Utils/BlogImageProvider.dart';
 import 'package:blog_creator/Provider/CheckListProvider.dart';
 import 'package:blog_creator/Provider/ReviewProvider.dart';
 import 'package:blog_creator/Utils/FileHandler.dart';
+import 'package:blog_creator/components/CompDropDown.dart';
 import 'package:blog_creator/components/ComponentButton.dart';
-import 'package:blog_creator/Template/PdfSimple.dart';
-import 'package:blog_creator/Template/PdfSimpleRight.dart';
 import 'package:blog_creator/components/UtilsComponent.dart';
-import 'package:blog_creator/Template/PdfSimpleLeft.dart';
-import 'package:blog_creator/Template/SimplePdfTemplate.dart';
+import 'package:blog_creator/Template/PdfTemplate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:path_provider/path_provider.dart';
 import 'dart:html' as html;
 
 
@@ -187,10 +177,31 @@ class ReviewScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
 
-                  LanguageDropdown(),
+                  CompDropDown.dropDown(context: context, value: Provider.of<ReviewProvider>(context).selectedLanguage,
+                  items: Provider.of<ReviewProvider>(context).availableLanguages,
+                  hint: 'Choose Language',
+                  onChanged: (String? value) async {
+                      if (value != null) {
+                        
+                        LoaderProvider loaderProvider = Provider.of<LoaderProvider>(context, listen: false);
+                        loaderProvider.setLoading(true);
+                        await Provider.of<ReviewProvider>(context, listen: false).updateLanguage(value);
+                        loaderProvider.setLoading(false);
+                      }
+                  },),
+
                   const SizedBox(height: 16),
                   
-                  TemplateDropdown(),
+                  
+                  CompDropDown.dropDown(context: context, 
+                  value: Provider.of<ReviewProvider>(context).selectedTemplateName,
+                  items: Provider.of<ReviewProvider>(context).availableTemplateNames,
+                  hint: 'Choose Template',
+                  onChanged: (String? value) async {
+                      if (value != null) {
+                        Provider.of<ReviewProvider>(context, listen: false).updateTemplateName(value);
+                      }
+                  },),
                   
                   const Spacer(),
 
@@ -203,6 +214,7 @@ class ReviewScreen extends StatelessWidget {
                       FileHandler.saveToLocalStorage(context);
                     },
                   ),
+                  const SizedBox(height: 16),
                         
                   ComponentButton(
                     title: 'Export to PDF',
@@ -213,28 +225,7 @@ class ReviewScreen extends StatelessWidget {
                           Uint8List pdfBytes;
                         
                           loaderProvider.setLoading(true);
-                          switch (provider.selectedTemplateName) {
-                            
-                            case 'Simple':
-                               pdfBytes = await PdfSimpleTemplate(title:provider.finalTitle, topic: provider.finalSelectedTopic, content: provider.listFinalContent,  font: await provider.getFont()  ).generatePdf();
-                               break;
-
-                            case 'Simple Right':
-                               pdfBytes = await PdfSimpleRightTemplate(title:provider.finalTitle, topic: provider.finalSelectedTopic, content: provider.listFinalContent, font: await provider.getFont()).generatePdf();
-                               break;
-                            
-                            case 'Simple Left':
-                              print('creating pdf simple left  ${provider.listFinalContent.length}');
-                              pdfBytes = await PdfSimpleLeftTemplate(title:provider.finalTitle, topic: provider.finalSelectedTopic, content: provider.listFinalContent, font: await provider.getFont()).generatePdf();
-                              break;
-                        
-                            // case 'Table And Image':
-                            //   pdfBytes = await PdfWithTableAndImageTemplate(title:provider.finalTitle, content: provider.paragraphs).generatePdf();
-                            //   break;
-                              
-                            default:
-                              return null;
-                          }
+                          pdfBytes = await PdfTemplate(title:provider.finalTitle, topic: provider.finalSelectedTopic, content: provider.listFinalContent, font: await provider.getFont(), templateName: provider.selectedTemplateName).generatePdf();
                           loaderProvider.setLoading(false);
                         
                           // Create a blob and trigger download
@@ -363,7 +354,7 @@ displayImage(String listImageUrl) {
                 children: [
                   
                     Text(provider.listFinalContent[index].name.replaceAll('#', '').trim(), style: const TextStyle( fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, ), textAlign: TextAlign.center),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 14),
                     
                     if (provider.listFinalContent[index].imageUrls.isNotEmpty)
                       displayImageBytes(provider.listFinalContent[index].imageBytes),
@@ -408,7 +399,7 @@ displayImage(String listImageUrl) {
                 children: [
                   
                   Text(provider.listFinalContent[index].name.replaceAll('#', '').trim(), style: const TextStyle( fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, )),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 14),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -430,7 +421,7 @@ displayImage(String listImageUrl) {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 2.0),
-                          child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.left), 
+                          child: Text(provider.listFinalContent[index].tabularData, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300,  color: Colors.grey[800], fontFamily: 'CourierPrime'), textAlign: TextAlign.left), 
                         ),
                       ),
                 ],
@@ -448,7 +439,7 @@ displayImage(String listImageUrl) {
                 children: [
                   
                   Text(provider.listFinalContent[index].name.replaceAll('#', '').trim(), style: const TextStyle( fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, )),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 14),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -531,7 +522,7 @@ class LanguageDropdown extends StatelessWidget {
           dropdownColor: Colors.blueAccent,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 12,
           ),
           iconEnabledColor: Colors.white,
           isExpanded: true,
@@ -582,7 +573,7 @@ class TemplateDropdown extends StatelessWidget {
           dropdownColor: Colors.blueAccent,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 12,
           ),
           iconEnabledColor: Colors.white,
         ),
