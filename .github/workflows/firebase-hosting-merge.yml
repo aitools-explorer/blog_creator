@@ -31,12 +31,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update Machine
+      # - name: Update Machine
+      #   run: |
+      #     apt-get update
+      #     apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
+      #     apt-get clean
+      #     git clone https://github.com/flutter/flutter.git /usr/local/flutter
+      - name: Install Flutter
         run: |
-          apt-get update
-          apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
-          apt-get clean
-          git clone https://github.com/flutter/flutter.git /usr/local/flutter
+          wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_stable.tar.xz
+          tar xvf flutter_linux_stable.tar.xz
+          sudo mv flutter /usr/local/
+          export PATH=$PATH:/usr/local/flutter/bin
     
       
       - name: Install dependencies
