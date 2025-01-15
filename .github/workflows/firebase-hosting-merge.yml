@@ -39,11 +39,17 @@ jobs:
       #     apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback python3
       #     apt-get clean
       #     git clone https://github.com/flutter/flutter.git /usr/local/flutter
-      - name: Install Flutter
-        run: |
-          wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.1-stable.tar.xz
-          tar xvf flutter_linux_3.27.1-stable.tar.xz
-          export PATH="$PATH:$(pwd)/flutter/bin"
+      
+      # - name: Install Flutter
+      #   run: |
+      #     wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.1-stable.tar.xz
+      #     tar xvf flutter_linux_3.27.1-stable.tar.xz
+      #     export PATH="$PATH:$(pwd)/flutter/bin"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
     
       
       - name: Install dependencies
