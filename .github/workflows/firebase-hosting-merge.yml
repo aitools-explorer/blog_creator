@@ -27,9 +27,11 @@ on:
       - abhi_workspace
 jobs:
   build_and_deploy:
-    runs-on: node:21.7.3
+    # runs-on: node:21.7.3
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       # - name: Update Machine
       #   run: |
