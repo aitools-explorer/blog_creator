@@ -43,8 +43,7 @@ jobs:
         run: |
           wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.1-stable.tar.xz
           tar xvf flutter_linux_3.27.1-stable.tar.xz
-          sudo mv flutter /usr/local/
-          export PATH=$PATH:/usr/local/flutter/bin
+          export PATH="$PATH:$(pwd)/flutter/bin"
     
       
       - name: Install dependencies
