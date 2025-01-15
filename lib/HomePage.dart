@@ -12,7 +12,7 @@ import 'package:blog_creator/samplaClass/PDFGenerator.dart';
 import 'package:blog_creator/Provider/NavigationProvider.dart';
 import 'package:blog_creator/Provider/ReviewProvider.dart';
 import 'package:blog_creator/samplaClass/TextExample.dart';
-import 'package:blog_creator/Utils/RapidAiImageProvider.dart';
+import 'package:blog_creator/Network/RapidAiImageHandler.dart';
 import 'package:blog_creator/Network/WebImagesHandler.dart';
 import 'package:blog_creator/components/CompContainer.dart';
 import 'package:blog_creator/components/CompTextField.dart';
@@ -69,7 +69,7 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 30), // Spacing between cards and text field
 
               const Text(
-                "Topic Discovery 1..",
+                "Topic Discovery 2..",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'NotoSans-Regular',

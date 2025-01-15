@@ -3,7 +3,7 @@ import 'package:blog_creator/Provider/CheckListProvider.dart';
 import 'package:blog_creator/Provider/CheckboxProvider.dart';
 import 'package:blog_creator/Provider/ResearchImageProvider.dart';
 import 'package:blog_creator/Provider/ReviewProvider.dart';
-import 'package:blog_creator/Utils/RapidAiImageProvider.dart';
+import 'package:blog_creator/Network/RapidAiImageHandler.dart';
 import 'package:blog_creator/Network/WebImagesHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +82,7 @@ class ImageController {
       // for (var item in checkListProvider.listFinalContent) {
       //     String topic = title + ' : '+ item.name;
 
-      //     String webImages = await RapidAiImageProvider().getAIImage(topic);
+      //     String webImages = await RapidAiImageHandler().getAIImage(topic);
       //     aiImagesList.add(webImages);
       // }
       researchImageProvider.setAIImages(aiImagesList);
@@ -107,10 +107,10 @@ class ImageController {
       
       List<String> aiImagesList = [ ];
       
-      aiImagesList = await RapidAiImageProvider().getAIImage(prompt);
+      aiImagesList = await RapidAiImageHandler().getAIImage(prompt);
       
 
-      // String webImages = await RapidAiImageProvider().getAIImage(prompt);
+      // String webImages = await RapidAiImageHandler().getAIImage(prompt);
       // aiImagesList.add(webImages);
       
       researchImageProvider.setAIImages(aiImagesList);
