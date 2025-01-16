@@ -74,18 +74,13 @@ class CognifyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Consumer<NavigationProvider>(
-                builder: (context, navigationProvider, child) {
-                  return Text(
-                    navigationProvider.getTitle(),
-                    textAlign: TextAlign.left,
-                  );
-                },
-              ),
-            ],
+          title: Consumer<NavigationProvider>(
+            builder: (context, navigationProvider, child) {
+              return Text(
+                navigationProvider.getTitle(),
+                textAlign: TextAlign.left,
+              );
+            },
           ),
           backgroundColor: Color(0xFFF1F5F9), // Light grayish blue
           elevation: 0,

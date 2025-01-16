@@ -1,0 +1,36 @@
+
+name: Deploy to Firebase Hosting on merge
+on:
+  push:
+    branches:
+      - main
+      - abhi_workspace
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      
+      - name: Install Flutter
+        run: |
+          wget https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.1-stable.tar.xz
+          tar xvf flutter_linux_3.27.1-stable.tar.xz
+          echo "$PWD/flutter/bin" >> $GITHUB_PATH
+
+      - name: Verify Flutter Installation
+        run: flutter --version
+    
+      
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build and deploy
+        run: flutter build web
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BLOG_CREATOR_A933C }}
+          channelId: live
+          projectId: blog-creator-a933c

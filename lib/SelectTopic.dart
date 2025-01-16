@@ -1,14 +1,8 @@
-import 'dart:typed_data';
 
 import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/controller/DataController.dart';
-import 'package:blog_creator/Research.dart';
-import 'package:blog_creator/Model/ModeContent.dart';
 import 'package:blog_creator/Provider/ReviewProvider.dart';
-import 'package:blog_creator/Utils/BlogImageProvider.dart';
-import 'package:blog_creator/Provider/CheckListProvider.dart';
 import 'package:blog_creator/Provider/NavigationProvider.dart';
-import 'package:blog_creator/Network/openAIHandler.dart';
 import 'package:blog_creator/components/CustomDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -133,16 +127,16 @@ class SelectTopic extends StatelessWidget {
                          } else {
 
                            loaderProvider.setLoading(true);
-                           bool response = await DataController().fetchTitleData(context, _controller.text.trim());
+                           List<String> respTopics = await DataController().fetchTitleData(_controller.text.trim());
+                           
                            loaderProvider.setLoading(false);
-
-                           if (response) {
-                             NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
-                             homePageProvider.setPage(1);
+                           if (respTopics.isNotEmpty) {
+                             Provider.of<ReviewProvider>(context, listen: false).topics.addAll(respTopics);
+                             Provider.of<NavigationProvider>(context, listen: false).setPage(1);
                            } else {
                                CustomDialog().showCustomDialog(context, 'Error', 'Something went wrong');
                            }
-                         }
+                        }
                   },),
                   
                   SizedBox(width: 16), // Spacing
@@ -196,13 +190,7 @@ class SelectTopic extends StatelessWidget {
       onChanged: (value) {
         // Handle radio button selection
       },
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          color: Color(0xFF4A4A4A),
-        ),
-      ),
+      title: Text(title, style: TextStyle(fontSize: 16, color: Color(0xFF4A4A4A))),
       activeColor: Color(0xFF4A55C2),
     );
   }

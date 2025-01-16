@@ -68,6 +68,15 @@ class ResearchDataProvider with ChangeNotifier {
     // notifyListeners();
   }
 
+  void addAll(String key, List<Modelfact> values) {
+    if (!_factData.containsKey(key)) {
+      _factData[key] = [];
+    }
+    _factData[key]!.addAll(values);
+    notifyListeners();
+  }
+
+
   void remove(String key, Modelfact value) {
     if (_factData.containsKey(key)) {
       _factData[key]!.remove(value);
