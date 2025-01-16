@@ -302,13 +302,15 @@ class _ResearchState extends State<Research> with TickerProviderStateMixin {
           researchProvider.tabs[_tabController.index] = text;
           researchProvider.notify();
           loaderProvider.setLoading(true);
-          DataController().getFacts(context, researchProvider.tabs[_tabController.index], blogTitle, blogTopic, text).then((value) {
-              loaderProvider.setLoading(false);
-              if (value) {
-                print('======> $value');
-                // CheckListProvider().notify();
-                _controller.clear();
 
+          // researchDataProvider.add(tabName, Modelfact(factName:factName , isSelected: false));
+          // researchProvider.tabs[_tabController.index]
+          DataController().getFacts( blogTitle, blogTopic, text).then((value) {
+              loaderProvider.setLoading(false);
+              if (value.isNotEmpty) {
+                print('======> $value');
+                _controller.clear();
+                researchDataProvider.addAll(researchProvider.tabs[_tabController.index], value);
               } else {
                   CustomDialog().showCustomDialog(context, 'Error', 'Failed to fetch fact details. Please try again.');
               }

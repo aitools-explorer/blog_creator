@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:blog_creator/Provider/Loaderprovider.dart';
 import 'package:blog_creator/Provider/ResearchDataProvider.dart';
@@ -149,16 +150,17 @@ class HomePage extends StatelessWidget {
         }
 
         ReviewProvider reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
-        // reviewProvider.suggestedTopics.
         reviewProvider.setTitle(topic);
         
         loaderProvider.setLoading(true);
-        bool response = await DataController().fetchTitleData(context, topic);
+        List<String> respTopics = await DataController().fetchTitleData(topic);
+
+        
         loaderProvider.setLoading(false);
         
-        if (response) {
-          NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
-          homePageProvider.setPage(1);
+        if (respTopics.isNotEmpty) {
+          Provider.of<ReviewProvider>(context, listen: false).topics.addAll(respTopics);
+          Provider.of<NavigationProvider>(context, listen: false).setPage(1);
         } else {
           CustomDialog().showCustomDialog(context, 'Error', 'Something went wrong');
         }
@@ -212,10 +214,16 @@ class HomePage extends StatelessWidget {
 
     // Get data from OpenAI API
     return FutureBuilder(
-      future: DataController().fetchSuggestedTopics(context),
+      future: DataController().fetchSuggestedTopics(),
       builder: (context, snapshot) {
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasData) {
+          List<String> topics = snapshot.data as List<String>;
+          Provider.of<ReviewProvider>(context, listen: false).setSuggestedTopics(topics);
         }
         return  Consumer<ReviewProvider>(
               builder: (context, reviewProvider, child) {

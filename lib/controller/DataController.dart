@@ -22,12 +22,11 @@ enum ChartType {
 class DataController {
   
 
-    Future<bool> fetchSuggestedTopics(BuildContext context) async {
+    Future<List<String>> fetchSuggestedTopics() async {
         try {
             // String resp = await openAIHandler().getChatGPTResponse('suggest 10 latest topics for blog creation without extra content');
             String resp = "1. The Future of Renewable Energy Technologies\n2. Mental Health Awareness in the Digital Age\n3. The Impact of Remote Work on Corporate Culture\n4. Minimalism: Living with Less in a Consumer-Driven World\n5. Exploring the World of Plant-Based Diets\n6. Virtual Reality: Transforming Education and Training\n7. The Evolution of Social Media Marketing Strategies\n8. The Rise of Cryptocurrency: Opportunities and Challenges\n9. DIY Sustainable Home Projects for Beginners\n10. The Art of Mindfulness in a Fast-Paced World";
             await Future.delayed(const Duration(seconds: 1));
-            
             
             List<String> topics = [];
             List<String> response = resp.split('\n');
@@ -38,15 +37,14 @@ class DataController {
                 print(name);
             }
             
-            Provider.of<ReviewProvider>(context, listen: false).setSuggestedTopics(topics);
-            return true;
+            return topics;
         } on Exception catch (e) {
             print('Error: $e');
-            return false;
+            return [];
         }
     }
 
-    Future<bool> fetchTitleData(BuildContext context, String text) async {
+    Future<List<String>> fetchTitleData(String text) async {
         try {
             String resp = await openAIHandler().getChatGPTResponse('provide 10 topics points on : ${text.trim()}');
             // print('==>  $resp');
@@ -55,7 +53,7 @@ class DataController {
             // String resp = "Chhatrapati Shivaji Maharaj, the founder of the Maratha Empire in India, was a remarkable leader known for his innovative strategies, governance, and vision. Here are ten key domain points highlighting his legacy:\n\n1. **Military Innovation**: Shivaji is celebrated for his innovative military strategies, including the use of guerrilla warfare, which was particularly effective against larger Mughal and Deccan Sultanate forces.\n\n2. **Fortress Architecture**: He built and maintained numerous forts across the Western Ghats and the Konkan coast, which served as defensive strongholds and were crucial to his military operations.\n\n3. **Naval Strength**: Understanding the importance of naval power, Shivaji established a strong navy to protect the coast and assert control over the Arabian Sea, which was unprecedented for an Indian ruler of his time.\n\n4. **Ashtapradhan Council**: Shivaji established a council of eight ministers (Ashtapradhan) for efficient administration, allocating distinct roles and responsibilities to ensure a smooth governance process.\n\n5. **Religious Tolerance**: He is noted for his secular approach, respecting all religions and protecting places of worship, which helped him forge alliances across different communities.\n\n6. **Administrative Policies**: Shivaji implemented advanced administrative policies that promoted the welfare of his subjects, encouraged agriculture, supported trade, and regulated taxes.\n\n7. **Effective Intelligence Network**: He maintained an effective espionage network that provided him with vital information about his enemies' movements and plans, aiding in his military successes.\n\n8. **Promotion of Marathi**: Shivaji promoted the use of the Marathi language in administration and court matters, in place of Persian, which was prevalent in many parts of India at the time.\n\n9. **Coronation and Sovereignty**: His coronation in 1674 was a declaration of sovereignty, establishing a formal Maratha kingdom and legitimizing his rule.\n\n10. **Legacy and Inspiration**: Shivaji Maharaj's leadership, vision, and principles of governance have left a lasting legacy, inspiring future generations and movements advocating for freedom and self-rule.\n\nThese aspects of Shivaji Maharaj’s rule illustrate his multidimensional capabilities as a leader, visionary, and strategist, whose impact is still felt in Indian history and culture.";
 
             List<String> responses = resp.split('\n\n');
-            ReviewProvider reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
+            List<String> topics = [];
             // reviewProvider.topics.clear();
             // reviewProvider.setTitle(text);
 
@@ -65,29 +63,24 @@ class DataController {
               if (points.length == 2) {
                 if (counter != 0) {
                   List<String> title = points[0].trim().replaceAll('*', '').split('.');
-                  reviewProvider.topics.add(title[1]);
+                  topics.add(title[1]);
                 }
               }
               counter++;
             }
-            return true;
+            return topics;
         } catch (e) {
             print('Error occurred: $e');
-            return false;
+            return [];
         }
   }
 
-  Future<bool> getFacts(BuildContext context, String tabName, String domain, String topic, String prompt) async {
+  Future<List<Modelfact>> getFacts(String domain, String topic, String prompt) async {
         
-        ResearchDataProvider researchDataProvider = Provider.of<ResearchDataProvider>(context, listen: false);
         try {
 
-            // domain = 'Gandhi ji';
             String fPrompt = "Avoid escape notations such as \n etc, from the result. Provide 15 facts on $domain: $topic : $prompt. Result in exact format of {\"data\" : [\"1.abcd\", \"2.abcd\"]}";
             String resp = await openAIHandler().getChatGPTResponse(fPrompt);
-            // resp = 
-            // String resp = await openAIHandler().getChatGPTResponse('provide 15 facts in number points and no extra content on:- $domain: $topic');
-            //String resp = "1. **Guerrilla Warfare**: Shivaji Maharaj is renowned for employing guerrilla warfare tactics, utilizing the geography of the Western Ghats to conduct swift and surprise attacks against larger, traditional forces.\n\n2. **Fortress Control**: He strategically constructed and captured forts, having a network of over 300 forts. This provided strong defensive positions and control over key trade routes.\n\n3. **Navy Establishment**: Shivaji established a formidable naval presence along the Konkan coast to protect against coastal raids and facilitate trade, making him one of the few Indian kings to focus on naval strength.\n\n4. **Intelligence and Spies**: He maintained a robust intelligence network to gather crucial information on enemy movements and strategies, which was integral to his planning and execution of military operations.\n\n5. **Rapid Troop Movement**: Utilized light cavalry and infantry, capable of rapid movement across difficult terrains, to execute surprise raids and retreats swiftly.\n\n6. **Innovative Tactics**: Employed innovative tactics like the strategic fortification of hilltops and the use of mobile artillery, enhancing the effectiveness of his defenses and siege capabilities.\n\n7. **Diplomacy and Alliances**: Used diplomatic channels to forge alliances with local rulers and keep the Mughal Empire and other rivals embroiled in multiple conflicts, ensuring no single front against his dominion.\n\n8. **Decentralized Command**: Delegated significant authority to trusted lieutenants and local chieftains, allowing for flexible and quick decision-making in various regions.\n\n9. **Controlled Military Growth**: Focused on developing a well-trained, disciplined, and loyal army rather than maintaining large numbers, prioritizing quality over quantity.\n\n10. **Punitive Expeditions**: Conducted punitive expeditions to deter hostile neighbors and renegades, ensuring minimal dissent and reinforcing his authority in contested regions.\n\nThese strategies collectively contributed to Shivaji Maharaj's reputation as a brilliant military leader and enabled the establishment and expansion of the Maratha Empire.";
             // String resp = "1. Shivaji Maharaj implemented the guerilla warfare technique known as \"Shiva Sutra\" or Ganimi Kava, emphasizing swift and surprise attacks.\n2. He utilized the geographical terrain of the Western Ghats to his advantage, conducting successful mountain warfare.\n3. The construction of numerous forts in strategic locations enabled him to establish strongholds and safe havens.\n4. Shivaji maintained a navy, focusing on coastal defenses and protecting maritime trade against pirates and European naval forces.\n5. He excelled in psychological warfare, spreading rumors and misinformation to confuse and demoralize his opponents.\n6. Shivaji employed a highly mobile cavalry, known for its speed and agility in hit-and-run tactics.\n7. He was adept at using intelligence networks for gathering crucial information about enemy positions and plans.\n8. The Maratha infantry played a crucial role by forming effective blockades and laying siege to enemy forts.\n9. Shivaji implemented the use of artillery strategically, making his forces well-equipped and formidable.\n10. Surprise night attacks and ambushes were common tactics in Shivaji's military campaigns.\n11. He utilized a decentralized command structure to allow rapid decision-making and adaptability in changing battlefield conditions.\n12. The Maratha military under Shivaji was noted for its disciplined and well-trained soldiers.\n13. He employed diplomatic strategies along with military prowess, often forming temporary alliances to weaken stronger opponents.\n14. Shivaji extensively leveraged the use of spies and informants to provide real-time updates and strategic advantages.\n15. His emphasis on supply chain management ensured his troops were well-provisioned, even during extended military campaigns.";
             // resp = "{\"data\" : [\"1. TCS reported a revenue of \$22.2 billion for the fiscal year 2020.\", \"2. The company witnessed a year-on-year revenue growth of 7.1% in 2020.\", \"3. TCS's net income for the year was $4.5 billion.\", \"4. The profit margin for TCS in 2020 was 20.3%.\", \"5. TCS declared a total dividend of 73 Indian Rupees per share in 2020.\", \"6. The company's operating margin for 2020 was 24.6%.\", \"7. TCS's digital revenues contributed 33.2% to the total revenue in 2020.\", \"8. The Americas remained the largest market for TCS, generating 50.8% of its 2020 revenue.\", \"9. TCS had a total workforce of over 448,000 employees in 2020.\", \"10. The attrition rate for TCS in 2020 was 12.1%.\", \"11. TCS invested heavily in research and development, with a focus on AI and automation.\", \"12. The company saw increased demand in sectors like healthcare and banking during 2020.\", \"13. TCS maintained a high rate of client retention, with many long-term engagements.\", \"14. TCS's CFO highlighted their robust balance sheet and strong cash conversion in 2020.\", \"15. The company continued to expand its global presence, with new offices and delivery centers.\"]}";
 
@@ -96,6 +89,7 @@ class DataController {
             print('resp : ${resp}');
             List<dynamic> data =  jsonDecode(resp)['data'];
 
+            List<Modelfact> facts = [];
             for (int i=0; i < data.length; i++) {
 
                 String factName = data[i].toString();
@@ -103,163 +97,12 @@ class DataController {
                     List<String> splitFact = factName.split('. ');
                     factName = splitFact.length > 1 ? splitFact[1] : '';
                 }
-                researchDataProvider.add(tabName, Modelfact(factName:factName , isSelected: false));
+                facts.add(Modelfact(factName:factName , isSelected: false));
             }
-
-            // List<String> responses = resp.split('\n\n');
-
-            // String title='';
-            // String content = '';
-
-            // List<String> facts = resp.split('\n');
-
-            // for (int i=0; i < facts.length; i++) {
-                
-            //     List<String> indvFact = facts[i].split('. ');
-                
-            //     if (indvFact.isNotEmpty) {
-            //         content = indvFact[1].trim().replaceAll('*', '').replaceAll('#', '');
-            //         if (content.isNotEmpty) {
-            //             researchDataProvider.add(tabName, Modelfact(factName: content, isSelected: false));
-            //         }
-            //     }
-            //     title = '';
-            //     content = '';
-            //     //print('Title: ${title}  \n  Content : ${content}' );
-            //     // print('\n');
-                  
-            // }
-            researchDataProvider.notify();
-            
-            return true;
+            return facts;
         } catch (e) {
             print(e.toString());
-           return false;
-        }
-  }
-
-Future<bool> getTopicDetails(BuildContext context, String blogTitle, String blogTopic) async {
-        
-        CheckListProvider checkListProvider = Provider.of<CheckListProvider>(context, listen: false);
-        try {
-              
-            
-            String resp = await openAIHandler().getChatGPTResponse('Provide facts in points on : $blogTitle: $blogTopic');
-            // String resp = "Mahatma Gandhi's influence worldwide is profound and extends far beyond his role in India's struggle for independence. Here are some key areas where Gandhi's impact is evident:\n\n1. **Nonviolent Resistance (Satyagraha):** Gandhi's philosophy of nonviolent resistance has inspired countless movements and leaders around the world. His belief in \"satyagraha\" (truth force) and non-cooperation as powerful tools for social and political change have been adopted by various movements striving for justice and equality.\n\n2. **Civil Rights Movement:** In the United States, Martin Luther King Jr. was profoundly influenced by Gandhi's methods. King adopted nonviolent resistance as the core strategy of the Civil Rights Movement, which played a crucial role in ending segregation and securing equal rights for African Americans.\n\n3. **Anti-Apartheid Movement:** Nelson Mandela and other leaders in South Africa drew inspiration from Gandhi's principles in their struggle against apartheid. Gandhi's early activism in South Africa against racial discrimination laid a strong foundation for the anti-apartheid movement.\n\n4. **Freedom and Independence Movements:** Many leaders across Asia, Africa, and Latin America, including figures like Aung San Suu Kyi in Myanmar and Steve Biko in South Africa, have looked to Gandhi's strategies in their own fights for freedom and national independence from colonial rule.\n\n5. **Environmentalism and Simplicity:** Gandhi's emphasis on simple living, self-sufficiency, and respect for nature resonates with modern environmental movements. His advocacy for sustainable and community-oriented living has influenced contemporary ecological and sustainability initiatives.\n\n6. **Human Rights and Peace:** Organizations and individuals advocating for human rights and peacebuilding have adopted Gandhi's ideals. His messages of love, compassion, and understanding have been fundamental to peace negotiations and reconciliation efforts worldwide.\n\n7. **Educational and Social Reform:** Gandhi's focus on the upliftment of marginalized communities, including the betterment of rural education and the empowerment of women and lower castes, has had a lasting impact on social reform policies in various countries.\n\n8. **Cultural Legacy:** Gandhi's life and teachings continue to be studied and celebrated in academic institutions and cultural mediums worldwide. His legacy is preserved through literature, films, and memorials, inspiring future generations to explore nonviolent approaches to conflict resolution.\n\nOverall, Gandhi's influence is a testament to the power of nonviolence, truth, and moral integrity in addressing and overcoming social and political challenges. His ideals remain relevant in contemporary discourse on justice, equality, and sustainable living.";
-            //String resp = "Chhatrapati Shivaji Maharaj, the founder of the Maratha Empire in western India, is renowned for his military strategies and innovations that significantly contributed to his success in establishing and consolidating his kingdom in the 17th century. Here are some of his notable military innovations:\n\n1. **Guerrilla Warfare**: Shivaji is often credited with pioneering guerilla warfare in the Indian subcontinent. His tactics included swift raids, ambushes, and hit-and-run tactics, which allowed his smaller forces to effectively combat much larger armies.\n\n2. **Fortress Building and Utilization**: Recognizing the strategic importance of geography, Shivaji built and maintained a network of forts across his territory. Each fort was strategically located for defense, supply management, and communication. Forts like Raigad, Pratapgad, and Sindhudurg became key centers of his military power.\n\n3. **Naval Force**: Acknowledging the importance of securing coastlines, Shivaji developed a formidable naval force. He built ships of various sizes and enhanced coastal defense capabilities, allowing him to protect vital maritime trade routes from pirates and foreign powers.\n\n4. **Military Organization**: Shivaji reorganized his army into a disciplined and well-structured force with specific roles, such as cavalry (known for the Maratha light cavalry), infantry, and artillery units. His emphasis on training and agility gave his forces a distinct edge.\n\n5. **Asymmetric Warfare**: Rather than confronting large Mughal armies head-on, Shivaji employed asymmetric warfare tactics, choosing battle conditions favorably, and exploiting his enemies' weaknesses.\n\n6. **Intelligence Network**: Shivaji established a vast and effective network of spies and informants, which provided him with timely information about enemy movements, plans, and internal conditions. This intelligence was crucial for planning his military campaigns.\n\n7. **Logistics and Mobility**: Emphasizing speed and mobility, Shivaji ensured his troops could move quickly and efficiently. His logistical strategies included using local resources to sustain his army without relying on extended supply lines.\n\n8. **Cultural and Psychological Warfare**: Understanding the power of motivation, Shivaji fostered a sense of unity and nationalism among his troops, often leveraging cultural, religious, and regional identities to inspire and unite his soldiers under his leadership.\n\nThrough these and other strategies, Shivaji Maharaj was able to build a resilient and adaptable military force that successfully challenged much larger empires and laid the foundation for Maratha dominance in the region. His military acumen continues to be studied and admired in military history.";
-            // String resp = "Chhatrapati Shivaji Maharaj was a pioneering Maratha leader and warrior who significantly transformed warfare in 17th-century India through innovative military strategies and tactics. His contributions played a crucial role in establishing the Maratha Empire and resisting Mughal dominance. Here are several key points highlighting his military innovations:\n\n1. **Guerrilla Warfare Tactics**: Shivaji Maharaj is often credited with effectively employing guerrilla warfare techniques, which involved hit-and-run attacks, surprise raids, and strategic retreats. This style of warfare, known as “Ganimi Kava,” was instrumental in countering the numerically superior Mughal forces.\n\n2. **Fort Architecture and Utilization**: Recognizing the strategic importance of forts, Shivaji either built or captured numerous forts across Western India. He focused on fort architecture that complemented the rugged terrain of the Sahyadri Mountains, making them nearly impregnable. Notable forts include Raigad, Pratapgad, and Sinhagad.\n\n3. **Navy Development**: Shivaji established a formidable navy to protect the Konkan coastline and safeguard vital trade routes. His naval forces, comprised of small, agile ships, successfully challenged the dominance of the Portuguese, Siddis, and British on the western coast of India.\n\n4. **Strategic Alliances and Diplomacy**: Shivaji achieved strategic triumphs not just through military might but also through astute diplomacy. He forged alliances with local chieftains and utilized complex diplomacy to neutralize adversaries when direct military confrontation was not feasible.\n\n5. **Intelligence Network**: An efficient intelligence network was established to gather timely information regarding enemy movements and plans. This system ensured that Shivaji could anticipate and counteract enemy strategies effectively.\n\n6. **Asymmetric Warfare**: He employed asymmetric warfare methods, leveraging the speed and mobility of his forces. His army was trained to adapt to different combat scenarios, which allowed them to exploit enemy weaknesses.\n\n7. **Effective Use of Cavalry**: Shivaji’s army was known for its swift cavalry units, which could penetrate deep into enemy territory and disrupt their formations and supply lines. This mobility gave Shivaji a significant advantage in various campaigns.\n\n8. **Administrative and Military Reforms**: Shivaji reformed the military administration by implementing a merit-based system for promotions, thereby reducing corruption and ensuring competence within the ranks. His Ashtapradhan Mandal (Council of Eight Ministers) streamlined military and state functions.\n\n9. **Logistics and Supply Management**: Emphasizing the importance of logistics, Shivaji established systems to ensure reliable supply lines for his troops. His planning and resource management sustained his armies during protracted campaigns.\n\n10. **Cultural and Psychological Warfare**: Shivaji understood the psychological aspects of warfare. By projecting a strong, heroic image, he inspired his troops and demoralized his enemies, crafting a narrative of resilience and defiance against the Mughals.\n\nChhatrapati Shivaji Maharaj’s military innovations left a lasting legacy on Indian warfare. His combination of strategic acumen, tactical flexibility, and administrative reforms established a foundation for the Maratha Empire's resistance to external powers and underscored his reputation as a visionary leader and brilliant military strategist.";
-            
-          
-            
-            // if (responses.length > 0) {
-            //     checkListProvider.setTitle(responses[0].trim());
-            // }
-            List<String> responses = resp.split('\n\n');
-
-            String title='';
-            String content = '';
-
-            for (int i=0; i < responses.length; i++) {
-                  
-                  var splittedTitlePoints = responses[i];
-                  // print('-> $splittedTitlePoints'  );
-                  // print('\n');
-                  final regex = RegExp(r'^[^a-zA-Z0-9]');
-                  
-                  if (i ==0 || i == responses.length-1 && !regex.hasMatch(splittedTitlePoints)) {
-                    // if first and last index and The line does not starts with a special character
-                    if (i == 0) {
-                      title = 'Introduction';
-                    } else if (i == responses.length - 1) {
-                      title = 'Conclusion';
-                    }
-                    content = splittedTitlePoints;
-                    
-                  } else {
-                        List<String> indvRows = splittedTitlePoints.split('\n');
-                      for (int j=0; j < indvRows.length; j++) {
-                            // Sample content
-                            //2. **Fort Architecture and Fortifications**: He extensively developed and fortified hill forts across Maharashtra, making use of the region's geographical advantages. These forts, such as Rajgad, Raigad, and Sinhagad, served as defensive bastions and helped secure his territories.
-                            //2. **Sensors and Trackers**: - VR systems use sensors to detect the position and orientation of the HMD and controllers.
-                            print('length ====> ${indvRows.length}');
-                            
-                            if (indvRows.length == 1) {
-                                List<String> line = indvRows[j].split(':');  
-                                for (int k=0; k < line.length; k++) {
-
-                                    if (k == 0) {
-                                        if(line[0].contains('. **')){
-                                            title = line[0].split('. **')[1].replaceAll('-', '').replaceAll('*', '').trim();
-                                        } else {
-                                            title = line[0].replaceAll('-', '').replaceAll('*', '').trim();
-                                        }
-                                    } else {
-                                      content += line[k].replaceAll('-', '').replaceAll('*', '').trim() + '\n';
-                                    }
-                                    
-                                }
-                                // print('-> ${title}   ====>  ${content}'  );
-                            } else {
-                              
-                                if (j == 0) {
-                                    if(indvRows[0].contains('. **')){
-                                        title = indvRows[0].split('. **')[1].replaceAll('-', '').replaceAll('*', '').trim();
-                                    } else {
-                                        title = indvRows[0].replaceAll('-', '').replaceAll('*', '').trim();
-                                    }
-                                } else {
-                                    content += indvRows[j].replaceAll('#', '').replaceAll('-', '').replaceAll('*', '').trim().trim() + '\n';
-                                }  
-                                // print('-> ${title}   ====>  ${content}'  );
-
-                            }
-                      }
-                  }
-                  // for (int j=0; j < indvRows.length; j++) {
-                  //   // Sample content
-                  //   //2. **Fort Architecture and Fortifications**: He extensively developed and fortified hill forts across Maharashtra, making use of the region's geographical advantages. These forts, such as Rajgad, Raigad, and Sinhagad, served as defensive bastions and helped secure his territories.
-                        
-                  //       List<String> line = indvRows[j].split(':');  
-                  //       for (int k=0; k < line.length; k++) {
-
-                  //           // print('\n');
-                  //           if (line.length > 0) {
-                                
-                  //               if (line[0].length > 0 && line[0].contains('- **')) {
-                  //                 title = line[0].replaceAll('- **', '').replaceAll('*', '').trim();
-                  //               } else if (line[0].length > 0 && line[0].contains('**')) {
-                  //                 title = line[0].split('. **')[1].replaceAll('#', '').replaceAll('*', '').trim();
-                  //               }
-                                
-                  //               if (line.length > 1) {
-                  //                   content = line[1].trim();
-                  //               }
-                  //              print('-> ${line[0]}   ====>  ${title}'  );
-                  //           }
-                            
-                  //       }
-                  //  }
-
-                  
-                
-                  if (title.isNotEmpty) {
-                      // String imageUrl = _listImageUrls[0];
-                      // Uint8List imageBytes =  await BlogImageProvider().getNetworkImage(imageUrl);
-
-                      checkListProvider.addContent(title, content, '', Uint8List.fromList([]));
-                  } 
-                  title = '';
-                  content = '';
-                  //print('Title: ${title}  \n  Content : ${content}' );
-                  // print('\n');
-                  
-            }
-            checkListProvider.notify();
-            
-            return true;
-        } catch (e) {
-            print(e.toString());
-           return false;
+           return [];
         }
   }
 

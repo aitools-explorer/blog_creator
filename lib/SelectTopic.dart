@@ -127,16 +127,16 @@ class SelectTopic extends StatelessWidget {
                          } else {
 
                            loaderProvider.setLoading(true);
-                           bool response = await DataController().fetchTitleData(context, _controller.text.trim());
+                           List<String> respTopics = await DataController().fetchTitleData(_controller.text.trim());
+                           
                            loaderProvider.setLoading(false);
-
-                           if (response) {
-                             NavigationProvider homePageProvider = Provider.of<NavigationProvider>(context, listen: false);
-                             homePageProvider.setPage(1);
+                           if (respTopics.isNotEmpty) {
+                             Provider.of<ReviewProvider>(context, listen: false).topics.addAll(respTopics);
+                             Provider.of<NavigationProvider>(context, listen: false).setPage(1);
                            } else {
                                CustomDialog().showCustomDialog(context, 'Error', 'Something went wrong');
                            }
-                         }
+                        }
                   },),
                   
                   SizedBox(width: 16), // Spacing

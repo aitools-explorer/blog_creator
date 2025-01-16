@@ -1,56 +1,93 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-// import 'package:blog_creator/HomePage.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-
-// import 'package:blog_creator/main.dart';
-
-// void main() {
-//   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-//     // Build our app and trigger a frame.
-//     await tester.pumpWidget( HomePage());
-
-//     // Verify that our counter starts at 0.
-//     expect(find.text('0'), findsOneWidget);
-//     expect(find.text('1'), findsNothing);
-
-//     // Tap the '+' icon and trigger a frame.
-//     await tester.tap(find.byIcon(Icons.add));
-//     await tester.pump();
-
-//     // Verify that our counter has incremented.
-//     expect(find.text('0'), findsNothing);
-//     expect(find.text('1'), findsOneWidget);
-//   });
-// }
-
-
+import 'package:blog_creator/Provider/Loaderprovider.dart';
+import 'package:blog_creator/Provider/ReviewProvider.dart';
+import 'package:blog_creator/components/ComponentButton.dart';
 import 'package:blog_creator/controller/DataController.dart';
-import 'package:blog_creator/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:blog_creator/HomePage.dart';
+import 'package:provider/provider.dart';
+import 'package:mockito/mockito.dart';
+
+class MockLoaderProvider extends Mock implements LoaderProvider {}
+
+class MockReviewProvider extends Mock implements ReviewProvider {}
+
+class MockDataController extends Mock implements DataController {}
 
 void main() {
-  testWidgets('HomePage build method returns a Scaffold widget', (WidgetTester tester) async {
-    // Build the HomePage widget
-    await tester.pumpWidget(MaterialApp(
-      home: CognifyApp(),
-    ));
+  group('HomePage', () {
+    testWidgets('builds correctly', (tester) async {
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => MockLoaderProvider()),
+            ChangeNotifierProvider(create: (_) => MockReviewProvider()),
+          ],
+          child: MaterialApp(
+            home: HomePage(),
+          ),
+        ),
+      );
 
-    // Find the Scaffold widget
-    final scaffoldFinder = find.byType(Scaffold);
+      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(Column), findsOneWidget);
+      expect(find.byType(Row), findsNWidgets(3));
+      expect(find.byType(ComponentButton), findsNWidgets(5));
+    });
 
-    // Check if the Scaffold widget is found
-    expect(scaffoldFinder, findsOneWidget);
+    testWidgets('renders suggested topics correctly', (tester) async {
+      final mockDataController = MockDataController();
+      when(mockDataController.fetchSuggestedTopics()).thenAnswer((_) async => ['Topic 1', 'Topic 2', 'Topic 3']);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => MockLoaderProvider()),
+            ChangeNotifierProvider(create: (_) => MockReviewProvider()),
+          ],
+          child: MaterialApp(
+            home: Builder(
+              builder: (context) {
+                return HomePage();
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.text('Topic 1'), findsOneWidget);
+      expect(find.text('Topic 2'), findsOneWidget);
+      expect(find.text('Topic 3'), findsOneWidget);
+    });
+
+    testWidgets('fetches subdomain correctly', (tester) async {
+      final mockDataController = MockDataController();
+      when(mockDataController.fetchTitleData( '')).thenAnswer((_) async => ['Topic 1', 'Topic 2', 'Topic 3']);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => MockLoaderProvider()),
+            ChangeNotifierProvider(create: (_) => MockReviewProvider()),
+          ],
+          child: MaterialApp(
+            home: Builder(
+              builder: (context) {
+                return HomePage();
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(ComponentButton).first);
+      await tester.pump();
+
+      verify(mockDataController.fetchTitleData('')).called(1);
+    });
+
   });
-
-
 }
